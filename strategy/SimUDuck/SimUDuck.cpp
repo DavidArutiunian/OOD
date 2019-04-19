@@ -16,7 +16,17 @@ class FlyWithWings : public IFlyBehavior
 public:
 	void Fly() override
 	{
+		incrementFliesCount();
 		cout << "I'm flying with wings!!" << endl;
+		cout << m_flightsCount << " times flown..." << endl;
+	}
+
+private:
+	size_t m_flightsCount;
+
+	void incrementFliesCount()
+	{
+		m_flightsCount++;
 	}
 };
 
