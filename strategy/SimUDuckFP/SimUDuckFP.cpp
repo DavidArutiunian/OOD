@@ -11,107 +11,107 @@ using Strategy = function<void()>;
 class Context
 {
 public:
-	void PerformOperation()
-	{
-		for (const auto& strategy : m_strategies)
-		{
-			strategy();
-		}
-	}
+    void PerformOperation()
+    {
+        for (const auto& strategy : m_strategies)
+        {
+            strategy();
+        }
+    }
 
-	void SetStrategies(vector<Strategy>&& strategies)
-	{
-		m_strategies = strategies;
-	}
+    void SetStrategies(vector<Strategy>&& strategies)
+    {
+        m_strategies = strategies;
+    }
 
 private:
-	vector<Strategy> m_strategies;
+    vector<Strategy> m_strategies;
 };
 
 function<void()> FlyWithWings()
 {
-	size_t flightsCount = 0;
-	return [=]() mutable {
-		flightsCount++;
-		cout << "I'm flying with wings!!" << endl;
-		cout << flightsCount << " times flown..." << endl;
-	};
+    size_t flightsCount = 0;
+    return [=]() mutable {
+        flightsCount++;
+        cout << "I'm flying with wings!!" << endl;
+        cout << flightsCount << " times flown..." << endl;
+    };
 };
 
 void QuackBehavior()
 {
-	cout << "Quack Quack!!!" << endl;
+    cout << "Quack Quack!!!" << endl;
 }
 
 void SqueakBehavior()
 {
-	cout << "Squeek!!!" << endl;
+    cout << "Squeek!!!" << endl;
 }
 
 void DanceBehavior()
 {
-	cout << "Dance Dance!!!" << endl;
+    cout << "Dance Dance!!!" << endl;
 }
 
 void DanceWaltzBehavior()
 {
-	cout << "Dance Waltz!!!" << endl;
+    cout << "Dance Waltz!!!" << endl;
 }
 
 void DanceMinuetBehavior()
 {
-	cout << "Dance Minuet!!!" << endl;
+    cout << "Dance Minuet!!!" << endl;
 }
 
 int main()
 {
-	Context ctx;
+    Context ctx;
 
-	// MallardDuck
-	function<void()> Display = []() {
-		cout << "I'm mallard duck" << endl;
-	};
-	ctx.SetStrategies({ Display, QuackBehavior, FlyWithWings(), DanceWaltzBehavior });
-	ctx.PerformOperation();
+    // MallardDuck
+    function<void()> Display = []() {
+        cout << "I'm mallard duck" << endl;
+    };
+    ctx.SetStrategies({ Display, QuackBehavior, FlyWithWings(), DanceWaltzBehavior });
+    ctx.PerformOperation();
 
-	cout << endl;
+    cout << endl;
 
-	// RedheadDuck
-	Display = []() {
-		cout << "I'm redhead duck" << endl;
-	};
-	ctx.SetStrategies({ Display, QuackBehavior, FlyWithWings(), DanceMinuetBehavior });
-	ctx.PerformOperation();
+    // RedheadDuck
+    Display = []() {
+        cout << "I'm redhead duck" << endl;
+    };
+    ctx.SetStrategies({ Display, QuackBehavior, FlyWithWings(), DanceMinuetBehavior });
+    ctx.PerformOperation();
 
-	cout << endl;
+    cout << endl;
 
-	// DecoyDuck
-	Display = []() {
-		cout << "I'm decoy duck" << endl;
-	};
-	ctx.SetStrategies({ Display });
-	ctx.PerformOperation();
+    // DecoyDuck
+    Display = []() {
+        cout << "I'm decoy duck" << endl;
+    };
+    ctx.SetStrategies({ Display });
+    ctx.PerformOperation();
 
-	cout << endl;
+    cout << endl;
 
-	// RubberDuck
-	Display = []() {
-		cout << "I'm rubber duck" << endl;
-	};
-	ctx.SetStrategies({ Display, SqueakBehavior });
-	ctx.PerformOperation();
+    // RubberDuck
+    Display = []() {
+        cout << "I'm rubber duck" << endl;
+    };
+    ctx.SetStrategies({ Display, SqueakBehavior });
+    ctx.PerformOperation();
 
-	cout << endl;
+    cout << endl;
 
-	// ModelDuck
-	Display = []() {
-		cout << "I'm model duck" << endl;
-	};
-	ctx.SetStrategies({ Display, QuackBehavior });
-	ctx.PerformOperation();
+    // ModelDuck
+    Display = []() {
+        cout << "I'm model duck" << endl;
+    };
+    ctx.SetStrategies({ Display, QuackBehavior });
+    ctx.PerformOperation();
 
-	cout << endl;
+    cout << endl;
 
-	ctx.SetStrategies({ Display, QuackBehavior, FlyWithWings() });
-	ctx.PerformOperation();
+    ctx.SetStrategies({ Display, QuackBehavior, FlyWithWings() });
+    ctx.PerformOperation();
 }
