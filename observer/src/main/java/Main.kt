@@ -1,5 +1,5 @@
 fun main() {
-    val wd = WeatherData()
+    val wd = WeatherData(PriorityComparator())
 
     val display = Display()
     wd.registerObserver(display)

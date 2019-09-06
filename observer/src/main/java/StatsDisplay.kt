@@ -1,4 +1,4 @@
-class StatsDisplay : Observer<WeatherInfo> {
+open class StatsDisplay(priority: Int = 0) : ObserverImpl<WeatherInfo>(priority) {
     private var mMinTemperature = Double.POSITIVE_INFINITY
     private var mMaxTemperature = Double.NEGATIVE_INFINITY
     private var mAccTemperature = 0.0
@@ -18,6 +18,7 @@ class StatsDisplay : Observer<WeatherInfo> {
         println("Min Temp $mMinTemperature")
         val avgTemperature = (mAccTemperature / mCountAcc)
         println("Average Temp $avgTemperature")
+        println("Current Priority $mPriority")
         println("----------------")
     }
 }

@@ -1,5 +1,7 @@
-abstract class ObservableImpl<T> : Observable<T> {
-    private val mObservers: MutableSet<Observer<T>> = mutableSetOf()
+import java.util.*
+
+abstract class ObservableImpl<T>(comparator: Comparator<Observer<*>>?) : Observable<T> {
+    private val mObservers: PriorityQueue<Observer<T>> = PriorityQueue(comparator)
 
     override fun registerObserver(observer: Observer<T>) {
         mObservers.add(observer)
@@ -7,8 +9,17 @@ abstract class ObservableImpl<T> : Observable<T> {
 
     override fun notifyObservers() {
         val data = getChangedData()
-        for (observer in mObservers) {
-            observer.update(data)
+        // temporary store observers here
+        // while polling them from PriorityQueue
+        val tempObserverSet = mutableSetOf<Observer<T>>()
+        while (!mObservers.isEmpty()) {
+            val top = mObservers.poll()
+            top.update(data)
+            tempObserverSet.add(top)
+        }
+        // set observers back to PriorityQueue
+        for (observer in tempObserverSet) {
+            mObservers.add(observer)
         }
     }
 

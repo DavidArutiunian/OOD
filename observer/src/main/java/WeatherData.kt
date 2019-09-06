@@ -1,4 +1,6 @@
-class WeatherData : ObservableImpl<WeatherInfo>() {
+import java.util.Comparator
+
+class WeatherData(comparator: Comparator<Observer<*>>? = null) : ObservableImpl<WeatherInfo>(comparator) {
     private var mTemperature = 0.0
     private var mHumidity = 0.0
     private var mPressure = 0.0
