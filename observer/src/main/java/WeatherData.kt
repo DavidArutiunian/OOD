@@ -2,8 +2,8 @@ import java.util.*
 
 open class WeatherData(
     private val mDataStrategy: ChangeDataStrategy<WeatherInfo>,
-    comparator: Comparator<Observer<*>>? = null
-) : ObservableImpl<WeatherInfo>(comparator) {
+    comparator: Comparator<Observer<*, *>>? = null
+) : ObservableImpl<WeatherInfo, WeatherInfoType>(comparator) {
     private var mTemperature = 0.0
     private var mHumidity = 0.0
     private var mPressure = 0.0

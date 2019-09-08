@@ -1,5 +1,5 @@
-class PriorityComparator : Comparator<Observer<*>> {
-    override fun compare(prev: Observer<*>, curr: Observer<*>): Int {
+class PriorityComparator : Comparator<Observer<*, *>> {
+    override fun compare(prev: Observer<*, *>, curr: Observer<*, *>): Int {
         val prevPriority = prev.getPriority()
         val currPriority = curr.getPriority()
         return when {

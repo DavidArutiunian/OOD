@@ -2,7 +2,7 @@ import java.util.*
 
 class WeatherDataPro(
     private val mDataStrategy: ProChangeDataStrategy<WeatherInfo>,
-    comparator: Comparator<Observer<*>>? = null
+    comparator: Comparator<Observer<*, *>>? = null
 ) :
     WeatherData(mDataStrategy, comparator) {
     private var mWindInfo: WindInfo? = null

@@ -1,7 +1,11 @@
-interface Observable<T> {
-    fun registerObserver(observer: Observer<T>)
+interface Observable<T, E> {
+    fun registerObserver(observer: Observer<T, E>)
+
+    fun listenToEvent(observer: Observer<T, E>, event: E)
+
+    fun stopListeningEvent(observer: Observer<T, E>, event: E)
 
     fun notifyObservers()
 
-    fun removeObserver(observer: Observer<T>)
+    fun removeObserver(observer: Observer<T, E>)
 }

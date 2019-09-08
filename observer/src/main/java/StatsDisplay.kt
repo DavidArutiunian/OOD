@@ -1,4 +1,4 @@
-open class StatsDisplay(priority: Int = 0) : ObserverImpl<WeatherInfo>(priority) {
+open class StatsDisplay(priority: Int = 0) : ObserverImpl<WeatherInfo, WeatherInfoType>(priority) {
     private var mMinTemperature = Double.POSITIVE_INFINITY
     private var mMaxTemperature = Double.NEGATIVE_INFINITY
     private var mAccTemperature = 0.0
@@ -6,7 +6,7 @@ open class StatsDisplay(priority: Int = 0) : ObserverImpl<WeatherInfo>(priority)
     private var mAccWindDirection = 0.0
     private var mCountAcc = 0.0
 
-    override fun update(data: WeatherInfo) {
+    override fun update(data: WeatherInfo, events: Set<WeatherInfoType>?) {
         if (mMinTemperature > data.temperature) {
             mMinTemperature = data.temperature
         }
@@ -14,26 +14,43 @@ open class StatsDisplay(priority: Int = 0) : ObserverImpl<WeatherInfo>(priority)
             mMaxTemperature = data.temperature
         }
         mAccTemperature += data.temperature
-
-        ++mCountAcc
-
-        println("Max Temp $mMaxTemperature")
-        println("Min Temp $mMinTemperature")
-        val avgTemperature = (mAccTemperature / mCountAcc)
-        println("Average Temp $avgTemperature")
-        println("Current Priority $mPriority")
-        if (data.type != null) {
-            println("Current Data Type ${data.type}")
-        }
         if (data.wind != null) {
             mAccWindSpeed += data.wind.speed
             mAccWindDirection += data.wind.direction
+        }
 
-            val avgWindSpeed = mAccWindSpeed / mCountAcc
-            val avgWindDirection = mAccWindDirection / mCountAcc
+        ++mCountAcc
 
-            println("Average Wind Speed $avgWindSpeed")
-            println("Average Wind Direction $avgWindDirection")
+        val avgTemperature = (mAccTemperature / mCountAcc)
+        val avgWindSpeed = mAccWindSpeed / mCountAcc
+        val avgWindDirection = mAccWindDirection / mCountAcc
+
+        if (events != null) {
+            events.forEach {
+                when (it) {
+                    WeatherInfoType.TEMPERATURE -> {
+                        println("Max Temp $mMaxTemperature")
+                        println("Min Temp $mMinTemperature")
+                        println("Average Temp $avgTemperature")
+                    }
+                    WeatherInfoType.WIND -> if (data.wind != null) {
+                        println("Average Wind Speed $avgWindSpeed")
+                        println("Average Wind Direction $avgWindDirection")
+                    }
+                }
+            }
+        } else {
+            println("Max Temp $mMaxTemperature")
+            println("Min Temp $mMinTemperature")
+            println("Average Temp $avgTemperature")
+            if (data.wind != null) {
+                println("Average Wind Speed $avgWindSpeed")
+                println("Average Wind Direction $avgWindDirection")
+            }
+        }
+        println("Current Priority ${getPriority()}")
+        if (data.type != null) {
+            println("Current Data Type ${data.type}")
         }
         println("----------------")
     }
