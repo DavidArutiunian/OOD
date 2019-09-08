@@ -1,6 +1,9 @@
-import java.util.Comparator
+import java.util.*
 
-class WeatherData(comparator: Comparator<Observer<*>>? = null) : ObservableImpl<WeatherInfo>(comparator) {
+class WeatherData(
+    private val mDataStrategy: ChangeDataStrategy<WeatherInfo>,
+    comparator: Comparator<Observer<*>>? = null
+) : ObservableImpl<WeatherInfo>(comparator) {
     private var mTemperature = 0.0
     private var mHumidity = 0.0
     private var mPressure = 0.0
@@ -23,5 +26,5 @@ class WeatherData(comparator: Comparator<Observer<*>>? = null) : ObservableImpl<
         measurementsChanged()
     }
 
-    override fun getChangedData() = WeatherInfo(getTemperature(), getHumidity(), getPressure())
+    override fun getChangedData() = mDataStrategy.getChangedData(getTemperature(), getHumidity(), getPressure())
 }

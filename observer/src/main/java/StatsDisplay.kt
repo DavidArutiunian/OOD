@@ -19,6 +19,9 @@ open class StatsDisplay(priority: Int = 0) : ObserverImpl<WeatherInfo>(priority)
         val avgTemperature = (mAccTemperature / mCountAcc)
         println("Average Temp $avgTemperature")
         println("Current Priority $mPriority")
+        if (data.type != null) {
+            println("Current Data Type ${data.type}")
+        }
         println("----------------")
     }
 }

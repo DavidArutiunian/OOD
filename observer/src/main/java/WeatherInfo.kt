@@ -1,1 +1,1 @@
-data class WeatherInfo(val temperature: Double, val humidity: Double, val pressure: Double)
+data class WeatherInfo(val temperature: Double, val humidity: Double, val pressure: Double, val type: WeatherDataType? = null)

@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 
 internal class WeatherDataTest {
-    private val observable = WeatherData(PriorityComparator())
+    private val wd = WeatherData(WeatherChangeDataStrategy(), PriorityComparator())
 
     @Test fun `should call display (priority = 1) first and stats display (priority = 0) second`() {
         val spyDisplay = spy(Display(1))
@@ -15,16 +15,16 @@ internal class WeatherDataTest {
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
-        observable.registerObserver(spyDisplay)
-        observable.registerObserver(spyStatsDisplay)
+        wd.registerObserver(spyDisplay)
+        wd.registerObserver(spyStatsDisplay)
 
-        observable.setMeasurements(0.0, 0.0, 0.0)
+        wd.setMeasurements(0.0, 0.0, 0.0)
 
         inOrder.verify(spyDisplay).update(info)
         inOrder.verify(spyStatsDisplay).update(info)
 
-        observable.removeObserver(spyDisplay)
-        observable.removeObserver(spyStatsDisplay)
+        wd.removeObserver(spyDisplay)
+        wd.removeObserver(spyStatsDisplay)
     }
 
     @Test fun `should call stats display (priority = 1) first and display (priority = 0) second`() {
@@ -38,16 +38,16 @@ internal class WeatherDataTest {
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
-        observable.registerObserver(spyDisplay)
-        observable.registerObserver(spyStatsDisplay)
+        wd.registerObserver(spyDisplay)
+        wd.registerObserver(spyStatsDisplay)
 
-        observable.setMeasurements(0.0, 0.0, 0.0)
+        wd.setMeasurements(0.0, 0.0, 0.0)
 
         inOrder.verify(spyStatsDisplay).update(info)
         inOrder.verify(spyDisplay).update(info)
 
-        observable.removeObserver(spyDisplay)
-        observable.removeObserver(spyStatsDisplay)
+        wd.removeObserver(spyDisplay)
+        wd.removeObserver(spyStatsDisplay)
     }
 
     @Test fun `should call display (priority = 0) first and stats display (priority = -1) second`() {
@@ -61,16 +61,16 @@ internal class WeatherDataTest {
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
-        observable.registerObserver(spyDisplay)
-        observable.registerObserver(spyStatsDisplay)
+        wd.registerObserver(spyDisplay)
+        wd.registerObserver(spyStatsDisplay)
 
-        observable.setMeasurements(0.0, 0.0, 0.0)
+        wd.setMeasurements(0.0, 0.0, 0.0)
 
         inOrder.verify(spyDisplay).update(info)
         inOrder.verify(spyStatsDisplay).update(info)
 
-        observable.removeObserver(spyDisplay)
-        observable.removeObserver(spyStatsDisplay)
+        wd.removeObserver(spyDisplay)
+        wd.removeObserver(spyStatsDisplay)
     }
 
     @Test fun `should call in register order if priority is the same`() {
@@ -84,15 +84,15 @@ internal class WeatherDataTest {
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
-        observable.registerObserver(spyDisplay)
-        observable.registerObserver(spyStatsDisplay)
+        wd.registerObserver(spyDisplay)
+        wd.registerObserver(spyStatsDisplay)
 
-        observable.setMeasurements(0.0, 0.0, 0.0)
+        wd.setMeasurements(0.0, 0.0, 0.0)
 
         inOrder.verify(spyDisplay).update(info)
         inOrder.verify(spyStatsDisplay).update(info)
 
-        observable.removeObserver(spyDisplay)
-        observable.removeObserver(spyStatsDisplay)
+        wd.removeObserver(spyDisplay)
+        wd.removeObserver(spyStatsDisplay)
     }
 }
