@@ -1,6 +1,6 @@
 import java.util.*
 
-class WeatherData(
+open class WeatherData(
     private val mDataStrategy: ChangeDataStrategy<WeatherInfo>,
     comparator: Comparator<Observer<*>>? = null
 ) : ObservableImpl<WeatherInfo>(comparator) {
@@ -8,11 +8,11 @@ class WeatherData(
     private var mHumidity = 0.0
     private var mPressure = 0.0
 
-    private fun getTemperature() = mTemperature
+    protected fun getTemperature() = mTemperature
 
-    private fun getHumidity() = mHumidity
+    protected fun getHumidity() = mHumidity
 
-    private fun getPressure() = mPressure
+    protected fun getPressure() = mPressure
 
     private fun measurementsChanged() {
         notifyObservers()

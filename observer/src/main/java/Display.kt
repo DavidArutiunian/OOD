@@ -7,6 +7,10 @@ class Display(priority: Int = 0) : ObserverImpl<WeatherInfo>(priority) {
         if (data.type != null) {
             println("Current Data Type ${data.type}")
         }
+        if (data.wind != null) {
+            println("Current Wind Speed ${data.wind.speed}")
+            println("Current Wind Direction ${data.wind.direction}")
+        }
         println("----------------")
     }
 }
