@@ -1,19 +1,19 @@
-import java.util.*
+class WeatherDataPro : WeatherData() {
+    private var mWindInfo = WindInfo(0.0, 0)
 
-class WeatherDataPro(
-    private val mDataStrategy: ProChangeDataStrategy<WeatherInfo>,
-    comparator: Comparator<Observer<*, *>>? = null
-) :
-    WeatherData(mDataStrategy, comparator) {
-    private var mWindInfo: WindInfo? = null
-
-    private fun getWindInfo(): WindInfo? = mWindInfo
+    private fun getWindInfo() = mWindInfo
 
     fun setMeasurements(temp: Double, humidity: Double, pressure: Double, wind: WindInfo) {
+        val events = mutableSetOf<WeatherInfoType>()
+
+        when {
+            changed(mWindInfo, wind) -> events.add(WeatherInfoType.WIND)
+        }
+
         mWindInfo = wind
-        super.setMeasurements(temp, humidity, pressure)
+
+        setMeasurementsImpl(temp, humidity, pressure, events)
     }
 
-    override fun getChangedData(): WeatherInfo =
-        mDataStrategy.getChangedData(getTemperature(), getHumidity(), getPressure(), getWindInfo())
+    override fun getChangedData() = WeatherInfo(getTemperature(), getHumidity(), getPressure(), getWindInfo())
 }

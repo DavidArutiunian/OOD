@@ -1,57 +1,45 @@
-open class StatsDisplay(priority: Int = 0) : ObserverImpl<WeatherInfo, WeatherInfoType>(priority) {
-    private var mMinTemperature = Double.POSITIVE_INFINITY
-    private var mMaxTemperature = Double.NEGATIVE_INFINITY
-    private var mAccTemperature = 0.0
-    private var mAccWindSpeed = 0.0
-    private var mAccWindDirection = 0.0
-    private var mCountAcc = 0.0
+open class StatsDisplay : Observer<WeatherInfo> {
+    private val mTempStats = Stats("Temp")
+    private val mHumStats = Stats("Hum")
+    private val mPressureStats = Stats("Pressure")
 
-    override fun update(data: WeatherInfo, events: Set<WeatherInfoType>?) {
-        if (mMinTemperature > data.temperature) {
-            mMinTemperature = data.temperature
-        }
-        if (mMaxTemperature < data.temperature) {
-            mMaxTemperature = data.temperature
-        }
-        mAccTemperature += data.temperature
-        if (data.wind != null) {
-            mAccWindSpeed += data.wind.speed
-            mAccWindDirection += data.wind.direction
-        }
+    override fun update(data: WeatherInfo) {
+        mTempStats += data.temperature
+        mHumStats += data.humidity
+        mPressureStats += data.pressure
 
-        ++mCountAcc
+        print(mTempStats)
+        print(mHumStats)
+        print(mPressureStats)
+    }
 
-        val avgTemperature = (mAccTemperature / mCountAcc)
-        val avgWindSpeed = mAccWindSpeed / mCountAcc
-        val avgWindDirection = mAccWindDirection / mCountAcc
-
-        if (events != null) {
-            events.forEach {
-                when (it) {
-                    WeatherInfoType.TEMPERATURE -> {
-                        println("Max Temp $mMaxTemperature")
-                        println("Min Temp $mMinTemperature")
-                        println("Average Temp $avgTemperature")
-                    }
-                    WeatherInfoType.WIND -> if (data.wind != null) {
-                        println("Average Wind Speed $avgWindSpeed")
-                        println("Average Wind Direction $avgWindDirection")
-                    }
-                }
-            }
-        } else {
-            println("Max Temp $mMaxTemperature")
-            println("Min Temp $mMinTemperature")
-            println("Average Temp $avgTemperature")
-            if (data.wind != null) {
-                println("Average Wind Speed $avgWindSpeed")
-                println("Average Wind Direction $avgWindDirection")
-            }
-        }
-        println("Current Priority ${getPriority()}")
-        if (data.type != null) {
-            println("Current Data Type ${data.type}")
-        }
+    private fun print(stats: Stats) {
+        println("Max ${stats.name()} ${stats.max()}")
+        println("Min ${stats.name()} ${stats.min()}")
+        println("Average ${stats.name()} ${stats.avg()}")
         println("----------------")
+    }
+
+    private inner class Stats(
+        private val mName: String,
+        private var mMin: Double = Double.POSITIVE_INFINITY,
+        private var mMax: Double = Double.NEGATIVE_INFINITY,
+        private var mAcc: Double = 0.0,
+        private var mAccCount: Int = 0
+    ) {
+        fun name() = mName
+
+        fun max() = mMax
+
+        fun min() = mMin
+
+        fun avg() = mAcc / mAccCount
+
+        operator fun plusAssign(value: Double) {
+            mMin = minOf(mMin, value)
+            mMax = maxOf(mMax, value)
+            mAcc += value
+            ++mAccCount
+        }
     }
 }

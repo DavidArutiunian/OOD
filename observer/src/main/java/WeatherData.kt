@@ -1,9 +1,4 @@
-import java.util.*
-
-open class WeatherData(
-    private val mDataStrategy: ChangeDataStrategy<WeatherInfo>,
-    comparator: Comparator<Observer<*, *>>? = null
-) : ObservableImpl<WeatherInfo, WeatherInfoType>(comparator) {
+open class WeatherData : ObservableImpl<WeatherInfo, WeatherInfoType>() {
     private var mTemperature = 0.0
     private var mHumidity = 0.0
     private var mPressure = 0.0
@@ -14,17 +9,28 @@ open class WeatherData(
 
     protected fun getPressure() = mPressure
 
-    private fun measurementsChanged() {
-        notifyObservers()
-    }
+    protected fun changed(prev: Any, curr: Any) = prev != curr
 
-    fun setMeasurements(temp: Double, humidity: Double, pressure: Double) {
+    private fun measurementsChanged(events: Set<WeatherInfoType>) = notifyObservers(events)
+
+    protected fun setMeasurementsImpl(temp: Double, humidity: Double, pressure: Double, events: MutableSet<WeatherInfoType>) {
+        when {
+            changed(mTemperature, temp) -> events.add(WeatherInfoType.TEMPERATURE)
+            changed(mHumidity, temp) -> events.add(WeatherInfoType.HUMIDITY)
+            changed(mPressure, pressure) -> events.add(WeatherInfoType.PRESSURE)
+        }
+
         mTemperature = temp
         mHumidity = humidity
         mPressure = pressure
 
-        measurementsChanged()
+        measurementsChanged(events)
     }
 
-    override fun getChangedData() = mDataStrategy.getChangedData(getTemperature(), getHumidity(), getPressure())
+    fun setMeasurements(temp: Double, humidity: Double, pressure: Double) {
+        val events = mutableSetOf<WeatherInfoType>()
+        setMeasurementsImpl(temp, humidity, pressure, events)
+    }
+
+    override fun getChangedData() = WeatherInfo(getTemperature(), getHumidity(), getPressure(), WindInfo(0.0, 0))
 }

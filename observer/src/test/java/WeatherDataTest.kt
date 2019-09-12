@@ -2,21 +2,20 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 
 internal class WeatherDataTest {
-    private val wd = WeatherData(WeatherChangeDataStrategy(), PriorityComparator())
+    private val wd = WeatherData()
 
     @Test fun `should call display (priority = 1) first and stats display (priority = 0) second`() {
-        val spyDisplay = spy(Display(1))
-        val spyStatsDisplay = spy(StatsDisplay(0))
+        val (spyDisplay, spyStatsDisplay) = createSpyDisplays()
 
-        val info = WeatherInfo(0.0, 0.0, 0.0)
+        val info = getStubWeatherInfo()
 
         doNothing().`when`(spyDisplay).update(info)
         doNothing().`when`(spyStatsDisplay).update(info)
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
-        wd.registerObserver(spyDisplay)
-        wd.registerObserver(spyStatsDisplay)
+        wd.registerObserver(spyDisplay, 1)
+        wd.registerObserver(spyStatsDisplay, 0)
 
         wd.setMeasurements(0.0, 0.0, 0.0)
 
@@ -28,18 +27,17 @@ internal class WeatherDataTest {
     }
 
     @Test fun `should call stats display (priority = 1) first and display (priority = 0) second`() {
-        val spyDisplay = spy(Display(0))
-        val spyStatsDisplay = spy(StatsDisplay(1))
+        val (spyDisplay, spyStatsDisplay) = createSpyDisplays()
 
-        val info = WeatherInfo(0.0, 0.0, 0.0)
+        val info = getStubWeatherInfo()
 
         doNothing().`when`(spyDisplay).update(info)
         doNothing().`when`(spyStatsDisplay).update(info)
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
-        wd.registerObserver(spyDisplay)
-        wd.registerObserver(spyStatsDisplay)
+        wd.registerObserver(spyDisplay, 0)
+        wd.registerObserver(spyStatsDisplay, 1)
 
         wd.setMeasurements(0.0, 0.0, 0.0)
 
@@ -51,18 +49,17 @@ internal class WeatherDataTest {
     }
 
     @Test fun `should call display (priority = 0) first and stats display (priority = -1) second`() {
-        val spyDisplay = spy(Display(0))
-        val spyStatsDisplay = spy(StatsDisplay(-1))
+        val (spyDisplay, spyStatsDisplay) = createSpyDisplays()
 
-        val info = WeatherInfo(0.0, 0.0, 0.0)
+        val info = getStubWeatherInfo()
 
         doNothing().`when`(spyDisplay).update(info)
         doNothing().`when`(spyStatsDisplay).update(info)
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
-        wd.registerObserver(spyDisplay)
-        wd.registerObserver(spyStatsDisplay)
+        wd.registerObserver(spyDisplay, 0)
+        wd.registerObserver(spyStatsDisplay, -1)
 
         wd.setMeasurements(0.0, 0.0, 0.0)
 
@@ -74,10 +71,9 @@ internal class WeatherDataTest {
     }
 
     @Test fun `should call in register order if priority is the same`() {
-        val spyDisplay = spy(Display())
-        val spyStatsDisplay = spy(StatsDisplay())
+        val (spyDisplay, spyStatsDisplay) = createSpyDisplays()
 
-        val info = WeatherInfo(0.0, 0.0, 0.0)
+        val info = getStubWeatherInfo()
 
         doNothing().`when`(spyDisplay).update(info)
         doNothing().`when`(spyStatsDisplay).update(info)
@@ -95,4 +91,8 @@ internal class WeatherDataTest {
         wd.removeObserver(spyDisplay)
         wd.removeObserver(spyStatsDisplay)
     }
+
+    private fun getStubWeatherInfo() = WeatherInfo(0.0, 0.0, 0.0, WindInfo(0.0, 0))
+
+    private fun createSpyDisplays() = Pair(spy(Display()), spy(StatsDisplay()))
 }

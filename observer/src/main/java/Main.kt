@@ -1,8 +1,7 @@
 fun main() {
-    val comparator = PriorityComparator()
 
-    val wdIn = WeatherData(DuoWeatherChangeDataStrategy(WeatherDataType.IN), comparator)
-    val wdOut = WeatherDataPro(ProDuoWeatherChangeDataStrategy(WeatherDataType.OUT), comparator)
+    val wdIn = WeatherData()
+    val wdOut = WeatherDataPro()
 
     val display = Display()
     wdIn.registerObserver(display)

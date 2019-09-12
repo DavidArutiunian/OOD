@@ -10,6 +10,7 @@
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <junit-jupiter-api.version>5.5.1</junit-jupiter-api.version>
         <mockito-core.version>3.0.0</mockito-core.version>
+        <rxjava.version>2.2.12</rxjava.version>
     </properties>
 
     <groupId>com.david-arutiunian</groupId>
@@ -45,6 +46,12 @@
             <artifactId>mockito-core</artifactId>
             <version>${mockito-core.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava -->
+        <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>${rxjava.version}</version>
         </dependency>
     </dependencies>
 
