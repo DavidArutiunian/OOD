@@ -27,9 +27,9 @@ abstract class ObservableImpl<T, E> : Observable<T, E> {
     private fun notifyObserverAndReturnToQueue(observer: Observer<T>, data: T, events: Set<E>) {
         val subscribedTo = mListeningEvents[observer]
         if (subscribedTo.isNullOrEmpty()) {
-            observer.update(data)
+            observer.update(data, this)
         } else if (events.intersect(subscribedTo).isNotEmpty()) {
-            observer.update(data)
+            observer.update(data, this)
         }
 
         mQueue.add(observer)

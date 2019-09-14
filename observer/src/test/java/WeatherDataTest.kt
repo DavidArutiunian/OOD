@@ -9,8 +9,8 @@ internal class WeatherDataTest {
 
         val info = getStubWeatherInfo()
 
-        doNothing().`when`(spyDisplay).update(info)
-        doNothing().`when`(spyStatsDisplay).update(info)
+        doNothing().`when`(spyDisplay).update(info, wd)
+        doNothing().`when`(spyStatsDisplay).update(info, wd)
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
@@ -19,8 +19,8 @@ internal class WeatherDataTest {
 
         wd.setMeasurements(0.0, 0.0, 0.0)
 
-        inOrder.verify(spyDisplay).update(info)
-        inOrder.verify(spyStatsDisplay).update(info)
+        inOrder.verify(spyDisplay).update(info, wd)
+        inOrder.verify(spyStatsDisplay).update(info, wd)
 
         wd.removeObserver(spyDisplay)
         wd.removeObserver(spyStatsDisplay)
@@ -31,8 +31,8 @@ internal class WeatherDataTest {
 
         val info = getStubWeatherInfo()
 
-        doNothing().`when`(spyDisplay).update(info)
-        doNothing().`when`(spyStatsDisplay).update(info)
+        doNothing().`when`(spyDisplay).update(info, wd)
+        doNothing().`when`(spyStatsDisplay).update(info, wd)
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
@@ -41,8 +41,8 @@ internal class WeatherDataTest {
 
         wd.setMeasurements(0.0, 0.0, 0.0)
 
-        inOrder.verify(spyStatsDisplay).update(info)
-        inOrder.verify(spyDisplay).update(info)
+        inOrder.verify(spyStatsDisplay).update(info, wd)
+        inOrder.verify(spyDisplay).update(info, wd)
 
         wd.removeObserver(spyDisplay)
         wd.removeObserver(spyStatsDisplay)
@@ -53,8 +53,8 @@ internal class WeatherDataTest {
 
         val info = getStubWeatherInfo()
 
-        doNothing().`when`(spyDisplay).update(info)
-        doNothing().`when`(spyStatsDisplay).update(info)
+        doNothing().`when`(spyDisplay).update(info, wd)
+        doNothing().`when`(spyStatsDisplay).update(info, wd)
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
@@ -63,8 +63,8 @@ internal class WeatherDataTest {
 
         wd.setMeasurements(0.0, 0.0, 0.0)
 
-        inOrder.verify(spyDisplay).update(info)
-        inOrder.verify(spyStatsDisplay).update(info)
+        inOrder.verify(spyDisplay).update(info, wd)
+        inOrder.verify(spyStatsDisplay).update(info, wd)
 
         wd.removeObserver(spyDisplay)
         wd.removeObserver(spyStatsDisplay)
@@ -75,8 +75,8 @@ internal class WeatherDataTest {
 
         val info = getStubWeatherInfo()
 
-        doNothing().`when`(spyDisplay).update(info)
-        doNothing().`when`(spyStatsDisplay).update(info)
+        doNothing().`when`(spyDisplay).update(info, wd)
+        doNothing().`when`(spyStatsDisplay).update(info, wd)
 
         val inOrder = inOrder(spyDisplay, spyStatsDisplay)
 
@@ -85,8 +85,8 @@ internal class WeatherDataTest {
 
         wd.setMeasurements(0.0, 0.0, 0.0)
 
-        inOrder.verify(spyDisplay).update(info)
-        inOrder.verify(spyStatsDisplay).update(info)
+        inOrder.verify(spyDisplay).update(info, wd)
+        inOrder.verify(spyStatsDisplay).update(info, wd)
 
         wd.removeObserver(spyDisplay)
         wd.removeObserver(spyStatsDisplay)
@@ -94,5 +94,5 @@ internal class WeatherDataTest {
 
     private fun getStubWeatherInfo() = WeatherInfo(0.0, 0.0, 0.0, WindInfo(0.0, 0))
 
-    private fun createSpyDisplays() = Pair(spy(Display()), spy(StatsDisplay()))
+    private fun createSpyDisplays() = Pair(spy(Display(wd, null)), spy(StatsDisplay(wd, null)))
 }
