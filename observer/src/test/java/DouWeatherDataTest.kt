@@ -22,6 +22,11 @@ internal class DouWeatherDataTest {
         wdOut.registerObserver(spyDisplay)
         wdOut.registerObserver(spyStatsDisplay)
 
+        wdIn.listenToEvent(spyDisplay, WeatherInfoType.ANY)
+        wdOut.listenToEvent(spyDisplay, WeatherInfoType.ANY)
+        wdIn.listenToEvent(spyStatsDisplay, WeatherInfoType.ANY)
+        wdOut.listenToEvent(spyStatsDisplay, WeatherInfoType.ANY)
+
         wdIn.setMeasurements(0.0, 0.0, 0.0)
         wdOut.setMeasurements(0.0, 0.0, 0.0)
 

@@ -7,18 +7,22 @@ internal class WeatherDataProTest {
     @Test fun `update should be called only on subscribed events`() {
         val spyDisplay = createSpyDisplay()
 
-        val info = WeatherInfo(1.0, 0.0, 0.0, WindInfo(0.0, 0))
+        val infoOne = WeatherInfo(1.0, 0.0, 1.0, WindInfo(0.0, 0))
+        val infoTwo = WeatherInfo(1.0, 0.0, 2.0, WindInfo(0.0, 0))
 
-        doNothing().`when`(spyDisplay).update(info, wd)
+        doNothing().`when`(spyDisplay).update(infoOne, wd)
+        doNothing().`when`(spyDisplay).update(infoTwo, wd)
 
         wd.registerObserver(spyDisplay)
 
         wd.listenToEvent(spyDisplay, WeatherInfoType.TEMPERATURE)
+        wd.listenToEvent(spyDisplay, WeatherInfoType.PRESSURE)
 
-        wd.setMeasurements(1.0, 0.0, 0.0, WindInfo(0.0, 0))
-        wd.setMeasurements(1.0, 0.0, 0.0, WindInfo(0.0, 0))
+        wd.setMeasurements(1.0, 0.0, 1.0, WindInfo(0.0, 0))
+        wd.setMeasurements(1.0, 0.0, 2.0, WindInfo(0.0, 0))
 
-        verify(spyDisplay, times(1)).update(info, wd)
+        verify(spyDisplay).update(infoOne, wd)
+        verify(spyDisplay).update(infoTwo, wd)
     }
 
     @Test fun `update should be called only on subscribed events with no duplicates`() {
@@ -60,11 +64,11 @@ internal class WeatherDataProTest {
 
         verify(spyDisplay, atLeastOnce()).update(infoTempOne, wd)
 
-        wd.stopListeningEvent(spyDisplay, WeatherInfoType.PRESSURE)
+        wd.stopListeningEvent(spyDisplay, WeatherInfoType.TEMPERATURE)
 
         wd.setMeasurements(2.0, 0.0, 0.0, WindInfo(0.0, 0))
 
-        verify(spyDisplay, atLeastOnce()).update(infoTempTwo, wd)
+        verify(spyDisplay, never()).update(infoTempTwo, wd)
     }
 
     @Test fun `should not update if subscribed to different event`() {

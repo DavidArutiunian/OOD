@@ -21,11 +21,11 @@ open class StatsDisplay(
             return
         }
 
-        mTempStats += data.temperature
-        mHumStats += data.humidity
-        mPressureStats += data.pressure
-        mWindSpeedStats += data.wind.speed
-        mWindDirectionStats += data.wind.direction
+        mTempStats.update(data.temperature)
+        mHumStats.update(data.humidity)
+        mPressureStats.update(data.pressure)
+        mWindSpeedStats.update(data.wind.speed)
+        mWindDirectionStats.update(data.wind.direction)
 
         print(mTempStats)
         print(mHumStats)
@@ -77,7 +77,7 @@ open class StatsDisplay(
 
         override fun avg() = mAcc / mAccCount
 
-        operator fun plusAssign(value: Double) {
+        fun update(value: Double) {
             mMin = minOf(mMin, value)
             mMax = maxOf(mMax, value)
             mAcc += value
@@ -86,20 +86,14 @@ open class StatsDisplay(
     }
 
     private inner class DirectionStats(mName: String) : BaseStats(mName) {
-        private val directions = arrayListOf<Short>()
+        private var mXDir: Double = 0.0
+        private var mYDir: Double = 0.0
 
-        operator fun plusAssign(direction: Short) {
-            directions.add(direction)
+        fun update(direction: Short) {
+            mXDir += sin(toRadians(direction.toDouble()))
+            mYDir += cos(toRadians(direction.toDouble()))
         }
 
-        override fun avg(): Double {
-            var sinSum = 0.0
-            var cosSum = 0.0
-            directions.forEach {
-                sinSum += sin(toRadians(it.toDouble()))
-                cosSum += cos(toRadians(it.toDouble()))
-            }
-            return toDegrees(atan2(sinSum, cosSum) + 360.0) % 360.0
-        }
+        override fun avg(): Double = (toDegrees(atan2(mXDir, mYDir)) + 360.0) % 360.0
     }
 }

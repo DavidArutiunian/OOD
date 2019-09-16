@@ -1,5 +1,4 @@
 fun main() {
-
     val wdIn = WeatherData()
     val wdOut = WeatherDataPro()
 
@@ -8,9 +7,13 @@ fun main() {
 
     wdIn.registerObserver(display)
     wdIn.registerObserver(statsDisplay)
+    wdIn.listenToEvent(display, WeatherInfoType.ANY)
+    wdIn.listenToEvent(statsDisplay, WeatherInfoType.ANY)
 
     wdOut.registerObserver(display)
     wdOut.registerObserver(statsDisplay)
+    wdOut.listenToEvent(display, WeatherInfoType.ANY)
+    wdOut.listenToEvent(statsDisplay, WeatherInfoType.ANY)
 
     wdIn.setMeasurements(3.0, 0.7, 760.0)
     wdOut.setMeasurements(3.0, 0.7, 760.0, WindInfo(5.0, 20))

@@ -13,10 +13,17 @@ open class WeatherData : ObservableImpl<WeatherInfo, WeatherInfoType>() {
 
     private fun measurementsChanged(events: Set<WeatherInfoType>) = notifyObservers(events)
 
-    protected fun setMeasurementsImpl(temp: Double, humidity: Double, pressure: Double, events: MutableSet<WeatherInfoType>) {
+    override fun checkSubscribedEventsImpl(events: Set<WeatherInfoType>) = events.contains(WeatherInfoType.ANY)
+
+    protected fun setMeasurementsImpl(
+        temp: Double,
+        humidity: Double,
+        pressure: Double,
+        events: MutableSet<WeatherInfoType>
+    ) {
         when {
             changed(mTemperature, temp) -> events.add(WeatherInfoType.TEMPERATURE)
-            changed(mHumidity, temp) -> events.add(WeatherInfoType.HUMIDITY)
+            changed(mHumidity, humidity) -> events.add(WeatherInfoType.HUMIDITY)
             changed(mPressure, pressure) -> events.add(WeatherInfoType.PRESSURE)
         }
 

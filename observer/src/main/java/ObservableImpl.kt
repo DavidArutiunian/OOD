@@ -17,22 +17,30 @@ abstract class ObservableImpl<T, E> : Observable<T, E> {
 
         val observers = arrayListOf<Observer<T>>()
         while (!mQueue.isEmpty()) {
-            val top = mQueue.poll()
+            val top = mQueue.poll() ?: continue
             observers.add(top)
         }
 
-        observers.forEach { notifyObserverAndReturnToQueue(it, data, events) }
+        observers.forEach {
+            notifyObserver(it, data, events)
+            returnToQueue(it)
+        }
     }
 
-    private fun notifyObserverAndReturnToQueue(observer: Observer<T>, data: T, events: Set<E>) {
+    private fun returnToQueue(it: Observer<T>) {
+        mQueue.add(it)
+    }
+
+    protected open fun checkSubscribedEventsImpl(events: Set<E>) = false
+
+    private fun notifyObserver(observer: Observer<T>, data: T, events: Set<E>) {
         val subscribedTo = mListeningEvents[observer]
         if (subscribedTo.isNullOrEmpty()) {
-            observer.update(data, this)
-        } else if (events.intersect(subscribedTo).isNotEmpty()) {
+            return
+        }
+        if (events.intersect(subscribedTo).isNotEmpty() || checkSubscribedEventsImpl(subscribedTo)) {
             observer.update(data, this)
         }
-
-        mQueue.add(observer)
     }
 
     override fun registerObserver(observer: Observer<T>, priority: Priority?) {
@@ -46,7 +54,9 @@ abstract class ObservableImpl<T, E> : Observable<T, E> {
     }
 
     override fun removeObserver(observer: Observer<T>) {
+        mListeningEvents.remove(observer)
         mQueue.remove(observer)
+        mPriorities.remove(observer)
     }
 
     override fun listenToEvent(observer: Observer<T>, event: E) {
@@ -61,6 +71,9 @@ abstract class ObservableImpl<T, E> : Observable<T, E> {
             return
         }
         mListeningEvents[observer]!!.remove(event)
+        if (mListeningEvents[observer]!!.isEmpty()) {
+            mListeningEvents.remove(observer)
+        }
     }
 
     protected abstract fun getChangedData(): T
