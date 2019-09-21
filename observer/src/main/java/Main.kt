@@ -1,6 +1,6 @@
 fun main() {
     val wdIn = WeatherData()
-    val wdOut = RxWeatherDataPro()
+    val wdOut = WeatherDataPro()
 
     val display = Display(wdIn, wdOut)
     val statsDisplay = StatsDisplay(wdOut, wdOut)

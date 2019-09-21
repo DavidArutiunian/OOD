@@ -6,7 +6,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 open class StatsDisplay(
-    weatherDataIn: Observable<WeatherInfo, *>?, weatherDataOut: Observable<WeatherInfo, *>?
+    weatherDataIn: BaseObservable<WeatherInfo, *>?, weatherDataOut: BaseObservable<WeatherInfo, *>?
 ) : DisplayImpl(weatherDataIn, weatherDataOut) {
     private val df = DecimalFormat("0.00")
 
@@ -16,7 +16,7 @@ open class StatsDisplay(
     private val mWindSpeedStats = Stats("Wind Speed")
     private val mWindDirectionStats = DirectionStats("Wind Direction")
 
-    override fun update(data: WeatherInfo, currentWeatherData: Observable<WeatherInfo, *>) {
+    override fun update(data: WeatherInfo, currentWeatherData: BaseObservable<WeatherInfo, *>) {
         if (isNotSubscribedTo(currentWeatherData)) {
             return
         }

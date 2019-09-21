@@ -106,8 +106,8 @@ internal class WeatherDataTest {
 
     @Test fun `observer removes itself without exceptions`() {
         val observer: Observer<WeatherInfo> = spy(object : Observer<WeatherInfo> {
-            override fun update(data: WeatherInfo, currentObservable: Observable<WeatherInfo, *>) {
-                currentObservable.removeObserver(this)
+            override fun update(data: WeatherInfo, currentPrioritizedObservable: BaseObservable<WeatherInfo, *>) {
+                currentPrioritizedObservable.removeObserver(this)
             }
         })
 

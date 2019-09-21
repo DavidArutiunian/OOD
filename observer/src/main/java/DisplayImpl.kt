@@ -1,9 +1,9 @@
 abstract class DisplayImpl(
-    private val weatherDataIn: Observable<WeatherInfo, *>?,
-    private val weatherDataOut: Observable<WeatherInfo, *>?
+    private val weatherDataIn: BaseObservable<WeatherInfo, *>?,
+    private val weatherDataOut: BaseObservable<WeatherInfo, *>?
 ) : Observer<WeatherInfo> {
-    protected fun isWeatherDataOut(currentWeatherData: Observable<WeatherInfo, *>) = currentWeatherData == weatherDataOut
+    protected fun isWeatherDataOut(currentWeatherData: BaseObservable<WeatherInfo, *>) = currentWeatherData == weatherDataOut
 
-    protected fun isNotSubscribedTo(currentWeatherData: Observable<WeatherInfo, *>) =
+    protected fun isNotSubscribedTo(currentWeatherData: BaseObservable<WeatherInfo, *>) =
         currentWeatherData != weatherDataIn && currentWeatherData != weatherDataOut
 }

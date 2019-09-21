@@ -1,4 +1,4 @@
-open class WeatherData : ObservableImpl<WeatherInfo, WeatherInfoType>() {
+open class WeatherData : PrioritizedObservableImpl<WeatherInfo, WeatherInfoType>() {
     private var mTemperature = 0.0
     private var mHumidity = 0.0
     private var mPressure = 0.0

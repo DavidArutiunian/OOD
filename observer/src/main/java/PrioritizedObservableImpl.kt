@@ -1,7 +1,7 @@
 import io.reactivex.subjects.PublishSubject
 import java.util.*
 
-abstract class ObservableImpl<T, E> : Observable<T, E> {
+abstract class PrioritizedObservableImpl<T, E> : PrioritizedObservable<T, E> {
     private val mListeningEvents: MutableMap<Observer<T>, MutableSet<E>> = mutableMapOf()
     private val mTaskQueue: PriorityQueue<Observer<T>> = PriorityQueue(PriorityComparator())
     private val mPublishSubject = PublishSubject.create<Pair<T, Set<E>>>()

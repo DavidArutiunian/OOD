@@ -16,7 +16,7 @@ class RxWeatherDataPro : Observable<WeatherInfo, WeatherInfoType> {
 
     private val subscriptions = HashMap<Int, EnumMap<WeatherInfoType, Boolean>>()
 
-    override fun registerObserver(observer: Observer<WeatherInfo>, priority: Priority?) {
+    override fun registerObserver(observer: Observer<WeatherInfo>) {
         mAnySubject
             .takeWhile { observerSubscribed(observer, WeatherInfoType.ANY) }
             .subscribe { onSubjectNext(observer) }

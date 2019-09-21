@@ -1,3 +1,3 @@
 interface Observer<T> {
-    fun update(data: T, currentObservable: Observable<T, *>)
+    fun update(data: T, currentObservable: BaseObservable<T, *>)
 }
