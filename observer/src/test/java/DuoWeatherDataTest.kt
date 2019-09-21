@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 
-internal class DouWeatherDataTest {
+internal class DuoWeatherDataTest {
     private val wdIn = WeatherData()
     private val wdOut = WeatherData()
 

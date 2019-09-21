@@ -3,12 +3,12 @@ import java.util.*
 
 abstract class ObservableImpl<T, E> : Observable<T, E> {
     private val mListeningEvents: MutableMap<Observer<T>, MutableSet<E>> = mutableMapOf()
-    private val mQueue: PriorityQueue<Observer<T>> = PriorityQueue(PriorityComparator())
-    private val mSubject = PublishSubject.create<Pair<T, Set<E>>>()
-    private val mPriorities = mutableMapOf<Observer<T>, Priority>()
+    private val mTaskQueue: PriorityQueue<Observer<T>> = PriorityQueue(PriorityComparator())
+    private val mPublishSubject = PublishSubject.create<Pair<T, Set<E>>>()
+    private val mPriorityMap = mutableMapOf<Observer<T>, Priority>()
 
     init {
-        mSubject.subscribe { onNextCalled(it) }
+        mPublishSubject.subscribe { onNextCalled(it) }
     }
 
     private fun onNextCalled(pair: Pair<T, Set<E>>) {
@@ -16,8 +16,8 @@ abstract class ObservableImpl<T, E> : Observable<T, E> {
         val events = pair.second
 
         val observers = arrayListOf<Observer<T>>()
-        while (!mQueue.isEmpty()) {
-            val top = mQueue.poll() ?: continue
+        while (!mTaskQueue.isEmpty()) {
+            val top = mTaskQueue.poll() ?: continue
             observers.add(top)
         }
 
@@ -28,7 +28,7 @@ abstract class ObservableImpl<T, E> : Observable<T, E> {
     }
 
     private fun returnToQueue(it: Observer<T>) {
-        mQueue.add(it)
+        mTaskQueue.add(it)
     }
 
     protected open fun checkSubscribedEventsImpl(events: Set<E>) = false
@@ -44,19 +44,19 @@ abstract class ObservableImpl<T, E> : Observable<T, E> {
     }
 
     override fun registerObserver(observer: Observer<T>, priority: Priority?) {
-        mPriorities[observer] = priority ?: 0
-        mQueue.offer(observer)
+        mPriorityMap[observer] = priority ?: 0
+        mTaskQueue.offer(observer)
     }
 
     override fun notifyObservers(events: Set<E>) {
         val data = getChangedData()
-        mSubject.onNext(Pair(data, events))
+        mPublishSubject.onNext(Pair(data, events))
     }
 
     override fun removeObserver(observer: Observer<T>) {
         mListeningEvents.remove(observer)
-        mQueue.remove(observer)
-        mPriorities.remove(observer)
+        mTaskQueue.remove(observer)
+        mPriorityMap.remove(observer)
     }
 
     override fun listenToEvent(observer: Observer<T>, event: E) {
@@ -80,8 +80,8 @@ abstract class ObservableImpl<T, E> : Observable<T, E> {
 
     private inner class PriorityComparator : Comparator<Observer<T>> {
         override fun compare(prev: Observer<T>, curr: Observer<T>): Int {
-            val prevPriority = mPriorities[prev] ?: 0
-            val currPriority = mPriorities[curr] ?: 0
+            val prevPriority = mPriorityMap[prev] ?: 0
+            val currPriority = mPriorityMap[curr] ?: 0
             return when {
                 prevPriority < currPriority -> 1
                 prevPriority == currPriority -> 0
