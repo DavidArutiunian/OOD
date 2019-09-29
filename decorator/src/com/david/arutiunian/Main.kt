@@ -1,8 +1,7 @@
 package com.david.arutiunian
 
 import com.david.arutiunian.beverages.*
-import com.david.arutiunian.condimets.Cinnamon
-import com.david.arutiunian.condimets.Lemon
+import com.david.arutiunian.condimets.*
 import java.util.*
 
 fun main() {
@@ -11,31 +10,77 @@ fun main() {
 }
 
 fun dialogWithUser(input: Scanner) {
-    println("1 - Coffee, 2 - Tea, 3 - Milkshake")
+    val beverages = mapOf(
+        Pair("Cappuccino", { Cappuccino() }),
+        Pair("Double Cappuccino", { DoubleCappuccino() }),
+        Pair("Coffee", { Coffee() }),
+        Pair("Latte", { Latte() }),
+        Pair("Double Latte", { DoubleLatte() }),
+        Pair("Milkshake", { milkshakeDialog(input) }),
+        Pair("Tea", { teaDialog(input) })
+    )
+    beverages.keys.forEachIndexed { index, beverage -> println("${index + 1} - $beverage") }
 
-    var beverage: Beverage? = when (input.nextInt()) {
-        1 -> Coffee()
-        2 -> chooseTeaType(input)
-        3 -> chooseMilkshakeSize(input)
-        else -> return
-    } ?: return
+    val inputBeverageIndex = input.nextInt()
+    val inputBeverageKey = beverages.keys.elementAtOrNull(inputBeverageIndex - 1)
+    var beverage = beverages[inputBeverageKey]?.invoke() ?: return
 
-    loop@ while (true) {
-        println("1 - Lemon, 2 - Cinnamon, 0 - Checkout")
-        beverage = when (input.nextInt()) {
-            1 -> Lemon(beverage!!, 2)
-            2 -> Cinnamon(beverage!!)
-            0 -> break@loop
-            else -> return
-        }
+    while (true) {
+        val condiments = mapOf(
+            Pair("Lemon", { Lemon(beverage, 2) }),
+            Pair("Cinnamon", { Cinnamon(beverage) }),
+            Pair("Chocolate", { Chocolate(beverage, 1) }),
+            Pair("Chocolate crumbs", { ChocolateCrumbs(beverage, 50.0) }),
+            Pair("Coconut flakes", { CoconutFlakes(beverage, 50.0) }),
+            Pair("Cream", { Cream(beverage) }),
+            Pair("Ice cubes", { iceCubesDialog(input)?.invoke(beverage) }),
+            Pair("Liquor", { liquorDialog(input)?.invoke(beverage) }),
+            Pair("Syrup", { syrupDialog(input)?.invoke(beverage) })
+        )
+        condiments.keys.forEachIndexed { index, condiment -> println("${index + 1} - $condiment") }
+        println("0 - Checkout")
+        val inputCondimentIndex = input.nextInt()
+        if (inputCondimentIndex == 0) break
+        val inputCondimentKey = condiments.keys.elementAtOrNull(inputCondimentIndex - 1)
+        beverage = condiments[inputCondimentKey]?.invoke() ?: continue
     }
 
-    println(beverage?.getDescription() + ", cost: " + beverage?.getCost())
+    println(beverage.getDescription() + ", cost: " + beverage.getCost())
 }
 
-fun chooseMilkshakeSize(input: Scanner): Beverage? {
+fun syrupDialog(input: Scanner): ((beverage: Beverage) -> Beverage)? {
+    println("1 - Chocolate, 2 - Maple")
+    val type = when (input.nextInt()) {
+        1 -> SyrupType.CHOCOLATE
+        2 -> SyrupType.MAPLE
+        else -> return null
+    }
+    return { beverage -> Syrup(beverage, type) }
+}
+
+fun liquorDialog(input: Scanner): ((beverage: Beverage) -> Beverage)? {
+    println("1 - Hazel, 2 - Chocolate")
+    val type = when (input.nextInt()) {
+        1 -> LiquorType.HAZEL
+        2 -> LiquorType.CHOCOLATE
+        else -> return null
+    }
+    return { beverage -> Liquor(beverage, type) }
+}
+
+fun iceCubesDialog(input: Scanner): ((beverage: Beverage) -> Beverage)? {
+    println("1 - Dry, 2 - Water")
+    val type = when (input.nextInt()) {
+        1 -> IceCubeType.DRY
+        2 -> IceCubeType.WATER
+        else -> return null
+    }
+    return { beverage -> IceCubes(beverage, 2, type) }
+}
+
+fun milkshakeDialog(input: Scanner): Beverage? {
     println("1 - Small, 2 - Medium, 3 - Large")
-    val size = when(input.nextInt()) {
+    val size = when (input.nextInt()) {
         1 -> MilkshakeSize.SMALL
         2 -> MilkshakeSize.MEDIUM
         3 -> MilkshakeSize.LARGE
@@ -44,7 +89,7 @@ fun chooseMilkshakeSize(input: Scanner): Beverage? {
     return Milkshake(size)
 }
 
-fun chooseTeaType(input: Scanner): Beverage? {
+fun teaDialog(input: Scanner): Beverage? {
     println("1 - Green, 2 - White, 3 - Black, 4 - Oolong")
     val type = when (input.nextInt()) {
         1 -> TeaType.GREEN
