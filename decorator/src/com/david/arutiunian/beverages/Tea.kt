@@ -7,12 +7,12 @@ enum class TeaType {
     OOLONG,
 }
 
-class Tea(type: TeaType, mDescription: String = "Tea")
+class Tea(type: TeaType, description: String = "Tea")
     : BeverageImpl(when (type) {
-    TeaType.GREEN -> "Green $mDescription"
-    TeaType.WHITE -> "White $mDescription"
-    TeaType.BLACK -> "Black $mDescription"
-    TeaType.OOLONG -> "Oolong $mDescription"
+    TeaType.GREEN -> "Green $description"
+    TeaType.WHITE -> "White $description"
+    TeaType.BLACK -> "Black $description"
+    TeaType.OOLONG -> "Oolong $description"
 }) {
     override fun getCost() = 30.0
 }

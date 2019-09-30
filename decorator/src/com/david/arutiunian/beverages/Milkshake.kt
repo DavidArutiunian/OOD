@@ -6,11 +6,11 @@ enum class MilkshakeSize {
     LARGE
 }
 
-class Milkshake(private val mMilkshakeSize: MilkshakeSize, mDescription: String = "Milkshake")
+class Milkshake(private val mMilkshakeSize: MilkshakeSize, description: String = "Milkshake")
     : BeverageImpl(when (mMilkshakeSize) {
-    MilkshakeSize.SMALL -> "Small $mDescription"
-    MilkshakeSize.MEDIUM -> "Medium $mDescription"
-    MilkshakeSize.LARGE -> "Large $mDescription"
+    MilkshakeSize.SMALL -> "Small $description"
+    MilkshakeSize.MEDIUM -> "Medium $description"
+    MilkshakeSize.LARGE -> "Large $description"
 }) {
     override fun getCost() = when (mMilkshakeSize) {
         MilkshakeSize.SMALL -> 50.0

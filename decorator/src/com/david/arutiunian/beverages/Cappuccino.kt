@@ -1,5 +1,16 @@
 package com.david.arutiunian.beverages
 
-class Cappuccino(mDescription: String = "Cappuccino") : BeverageImpl(mDescription) {
-    override fun getCost() = 80.0
+enum class CappuccinoSize {
+    STANDARD,
+    DOUBLE
+}
+
+class Cappuccino(private val mType: CappuccinoSize, description: String = when (mType) {
+    CappuccinoSize.STANDARD -> "Cappuccino"
+    CappuccinoSize.DOUBLE -> "Double Cappuccino"
+}) : BeverageImpl(description) {
+    override fun getCost() = when (mType) {
+        CappuccinoSize.STANDARD -> 80.0
+        CappuccinoSize.DOUBLE -> 120.0
+    }
 }

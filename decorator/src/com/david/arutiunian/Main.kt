@@ -11,11 +11,11 @@ fun main() {
 
 fun dialogWithUser(input: Scanner) {
     val beverages = mapOf(
-        Pair("Cappuccino", { Cappuccino() }),
-        Pair("Double Cappuccino", { DoubleCappuccino() }),
+        Pair("Cappuccino", { Cappuccino(CappuccinoSize.STANDARD) }),
+        Pair("Double Cappuccino", { Cappuccino(CappuccinoSize.DOUBLE) }),
         Pair("Coffee", { Coffee() }),
-        Pair("Latte", { Latte() }),
-        Pair("Double Latte", { DoubleLatte() }),
+        Pair("Latte", { Latte(LatteSize.STANDARD) }),
+        Pair("Double Latte", { Latte(LatteSize.DOUBLE) }),
         Pair("Milkshake", { milkshakeDialog(input) }),
         Pair("Tea", { teaDialog(input) })
     )

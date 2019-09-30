@@ -1,3 +1,5 @@
+import io.reactivex.disposables.Disposable
+
 typealias Priority = Int
 
 interface BaseObservable<T, E> {
