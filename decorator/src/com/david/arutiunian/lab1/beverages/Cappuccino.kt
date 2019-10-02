@@ -1,4 +1,4 @@
-package com.david.arutiunian.beverages
+package com.david.arutiunian.lab1.beverages
 
 enum class CappuccinoSize {
     STANDARD,

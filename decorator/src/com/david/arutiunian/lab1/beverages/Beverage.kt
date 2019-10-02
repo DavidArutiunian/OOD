@@ -1,4 +1,4 @@
-package com.david.arutiunian.beverages
+package com.david.arutiunian.lab1.beverages
 
 interface Beverage {
     fun getDescription(): String

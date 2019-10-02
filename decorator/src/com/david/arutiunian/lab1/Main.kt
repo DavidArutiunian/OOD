@@ -1,7 +1,7 @@
-package com.david.arutiunian
+package com.david.arutiunian.lab1
 
-import com.david.arutiunian.beverages.*
-import com.david.arutiunian.condimets.*
+import com.david.arutiunian.lab1.beverages.*
+import com.david.arutiunian.lab1.condimets.*
 import java.util.*
 
 fun main() {

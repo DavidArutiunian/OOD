@@ -1,6 +1,6 @@
-package com.david.arutiunian.condimets
+package com.david.arutiunian.lab1.condimets
 
-import com.david.arutiunian.beverages.Beverage
+import com.david.arutiunian.lab1.beverages.Beverage
 
 class Chocolate(beverage: Beverage, private var mQuantity: Int) : CondimentDecoratorImpl(beverage) {
     companion object {
