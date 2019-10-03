@@ -15,8 +15,8 @@ class FileOutputStream(filename: String) : OutputStreamImpl() {
         }
     }
 
-    override fun writeByte(byte: Byte) {
-        stream.write(byte.toInt())
+    override fun writeByte(byte: Int) {
+        stream.write(byte)
     }
 
     fun close() {

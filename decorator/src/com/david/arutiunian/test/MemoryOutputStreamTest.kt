@@ -2,42 +2,43 @@ package com.david.arutiunian.test
 
 import com.david.arutiunian.lab2.input.MemoryInputStream
 import com.david.arutiunian.lab2.output.MemoryOutputStream
+import com.david.arutiunian.lab2.toIntArray
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
 
 @Suppress("FunctionName")
 internal class MemoryOutputStreamTest {
     private val test = "helloworld"
-    private val input = byteArrayOf(*test.toByteArray())
+    private val input = test.toIntArray()
 
     @Test
     fun `write test bytes by byte`() {
-        val expectedByteArray = test.toByteArray()
-        val actualByteArray = ByteArray(expectedByteArray.size)
+        val expectedByteArray = test.toIntArray()
+        val actualByteArray = IntArray(expectedByteArray.size)
 
-        val out = MemoryOutputStream(input)
+        val memoryOutputStream = MemoryOutputStream(input)
 
-        test.forEach { out.writeByte(it.toByte()) }
+        test.forEach { memoryOutputStream.writeByte(it.toInt()) }
 
-        val `in` = MemoryInputStream(input)
+        val memoryInputStream = MemoryInputStream(input)
 
-        `in`.readBlock(actualByteArray, actualByteArray.size)
+        memoryInputStream.readBlock(actualByteArray, actualByteArray.size)
 
         assertArrayEquals(expectedByteArray, actualByteArray)
     }
 
     @Test
     fun `write test bytes by block`() {
-        val expectedByteArray = test.toByteArray()
-        val actualByteArray = ByteArray(expectedByteArray.size)
+        val expectedByteArray = test.toIntArray()
+        val actualByteArray = IntArray(expectedByteArray.size)
 
-        val out = MemoryOutputStream(input)
+        val memoryOutputStream = MemoryOutputStream(input)
 
-        out.writeBlock(expectedByteArray, expectedByteArray.size)
+        memoryOutputStream.writeBlock(expectedByteArray, expectedByteArray.size)
 
-        val `in` = MemoryInputStream(input)
+        val memoryInputStream = MemoryInputStream(input)
 
-        `in`.readBlock(actualByteArray, actualByteArray.size)
+        memoryInputStream.readBlock(actualByteArray, actualByteArray.size)
 
         assertArrayEquals(expectedByteArray, actualByteArray)
     }

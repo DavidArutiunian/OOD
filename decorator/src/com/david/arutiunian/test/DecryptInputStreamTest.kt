@@ -1,6 +1,9 @@
 package com.david.arutiunian.test
 
+import com.david.arutiunian.lab2.decorators.input.DecryptInputStream
+import com.david.arutiunian.lab2.decorators.output.EncryptOutputStream
 import com.david.arutiunian.lab2.input.FileInputStream
+import com.david.arutiunian.lab2.output.FileOutputStream
 import com.david.arutiunian.lab2.toIntArray
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertArrayEquals
@@ -8,10 +11,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
-import java.io.FileWriter
 
 @Suppress("FunctionName")
-internal class FileInputStreamTest {
+internal class DecryptInputStreamTest {
+    private val seed = 16
     private val filename = "text.txt"
     private val test = "helloworld"
     private lateinit var file: File
@@ -20,9 +23,11 @@ internal class FileInputStreamTest {
     fun `create test file`() {
         file = File(filename)
         file.createNewFile()
-        val writer = FileWriter(file)
-        writer.append(test)
-        writer.close()
+        val fileOutputStream = FileOutputStream(filename)
+        val encryptOutputStream = EncryptOutputStream(fileOutputStream, seed)
+        val buffer = test.toIntArray()
+        encryptOutputStream.writeBlock(buffer, buffer.size)
+        fileOutputStream.close()
     }
 
     @AfterEach
@@ -33,12 +38,13 @@ internal class FileInputStreamTest {
     @Test
     fun `read 10 chars while not EOF`() {
         val fileInputStream = FileInputStream(filename)
+        val decryptInputStream = DecryptInputStream(fileInputStream, seed)
 
         val expectedDigitsLength = 10
         var actualDigitsLength = 0
 
-        while (!fileInputStream.isEOF()) {
-            fileInputStream.readByte()
+        while (!decryptInputStream.isEOF()) {
+            decryptInputStream.readByte()
             actualDigitsLength++
         }
 
@@ -53,10 +59,11 @@ internal class FileInputStreamTest {
         val expectedByteArray = IntArray(actualByteArray.size)
 
         val fileInputStream = FileInputStream(filename)
+        val decryptInputStream = DecryptInputStream(fileInputStream, seed)
 
         var index = 0
-        while (!fileInputStream.isEOF()) {
-            expectedByteArray[index++] = fileInputStream.readByte()
+        while (!decryptInputStream.isEOF()) {
+            expectedByteArray[index++] = decryptInputStream.readByte()
         }
 
         assertArrayEquals(expectedByteArray, actualByteArray)
@@ -71,8 +78,9 @@ internal class FileInputStreamTest {
         val expectedByteArray = IntArray(actualByteArray.size)
 
         val fileInputStream = FileInputStream(filename)
+        val decryptInputStream = DecryptInputStream(fileInputStream, seed)
 
-        val expectedStreamSize = fileInputStream.readBlock(expectedByteArray, actualStreamSize)
+        val expectedStreamSize = decryptInputStream.readBlock(expectedByteArray, actualStreamSize)
 
         assertArrayEquals(actualByteArray, expectedByteArray)
         assertEquals(actualStreamSize, expectedStreamSize)

@@ -1,6 +1,7 @@
 package com.david.arutiunian.test
 
 import com.david.arutiunian.lab2.input.MemoryInputStream
+import com.david.arutiunian.lab2.toIntArray
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -8,17 +9,17 @@ import org.junit.jupiter.api.Test
 @Suppress("FunctionName")
 internal class MemoryInputStreamTest {
     private val test = "helloworld"
-    private val input = byteArrayOf(*test.toByteArray())
+    private val input = test.toIntArray()
 
     @Test
     fun `read 10 chars while not EOF`() {
-        val stream = MemoryInputStream(input)
+        val memoryInputStream = MemoryInputStream(input)
 
         val expectedDigitsLength = 10
         var actualDigitsLength = 0
 
-        while (!stream.isEOF()) {
-            stream.readByte()
+        while (!memoryInputStream.isEOF()) {
+            memoryInputStream.readByte()
             actualDigitsLength++
         }
 
@@ -27,14 +28,14 @@ internal class MemoryInputStreamTest {
 
     @Test
     fun `read test data by byte`() {
-        val actualByteArray = test.toByteArray()
-        val expectedByteArray = ByteArray(actualByteArray.size)
+        val actualByteArray = test.toIntArray()
+        val expectedByteArray = IntArray(actualByteArray.size)
 
-        val stream = MemoryInputStream(input)
+        val memoryInputStream = MemoryInputStream(input)
 
         var index = 0
-        while (!stream.isEOF()) {
-            expectedByteArray[index++] = stream.readByte()
+        while (!memoryInputStream.isEOF()) {
+            expectedByteArray[index++] = memoryInputStream.readByte()
         }
 
         assertArrayEquals(expectedByteArray, actualByteArray)
@@ -42,13 +43,13 @@ internal class MemoryInputStreamTest {
 
     @Test
     fun `read test data by block`() {
-        val actualByteArray = test.toByteArray()
+        val actualByteArray = test.toIntArray()
         val actualStreamSize = actualByteArray.size
-        val expectedByteArray = ByteArray(actualByteArray.size)
+        val expectedByteArray = IntArray(actualByteArray.size)
 
-        val stream = MemoryInputStream(input)
+        val memoryInputStream = MemoryInputStream(input)
 
-        val expectedStreamSize = stream.readBlock(expectedByteArray, actualStreamSize)
+        val expectedStreamSize = memoryInputStream.readBlock(expectedByteArray, actualStreamSize)
 
         assertArrayEquals(actualByteArray, expectedByteArray)
         assertEquals(actualStreamSize, expectedStreamSize)

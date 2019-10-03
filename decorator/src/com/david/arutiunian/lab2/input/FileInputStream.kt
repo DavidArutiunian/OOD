@@ -17,14 +17,12 @@ class FileInputStream(private val filename: String) : InputStreamImpl() {
 
     override fun isEOF() = stream.available() == 0
 
-    override fun readByte(): Byte {
+    override fun readByte(): Int {
         if (isEOF()) {
             throw IOException("Failed to load next byte from $filename")
         }
 
-        val byte = stream.read()
-
-        return byte.toByte()
+        return stream.read()
     }
 
     fun close() {

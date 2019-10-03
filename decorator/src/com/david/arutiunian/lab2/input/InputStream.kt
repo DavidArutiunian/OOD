@@ -5,7 +5,7 @@ typealias StreamSize = Int
 interface InputStream {
     fun isEOF(): Boolean
 
-    fun readByte(): Byte
+    fun readByte(): Int
 
-    fun readBlock(buffer: ByteArray, size: StreamSize): StreamSize
+    fun readBlock(buffer: IntArray, size: StreamSize): StreamSize
 }
