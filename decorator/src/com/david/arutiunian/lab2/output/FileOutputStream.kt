@@ -1,10 +1,11 @@
 package com.david.arutiunian.lab2.output
 
+import java.io.Closeable
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class FileOutputStream(filename: String) : OutputStreamImpl() {
+class FileOutputStream(filename: String) : OutputStreamImpl(), Closeable {
     private val stream = FileOutputStream(filename)
 
     init {
@@ -19,7 +20,7 @@ class FileOutputStream(filename: String) : OutputStreamImpl() {
         stream.write(byte)
     }
 
-    fun close() {
+    override fun close() {
         stream.close()
     }
 }

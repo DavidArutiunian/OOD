@@ -1,10 +1,11 @@
 package com.david.arutiunian.lab2.input
 
+import java.io.Closeable
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 
-class FileInputStream(private val filename: String) : InputStreamImpl() {
+class FileInputStream(private val filename: String) : InputStreamImpl(), Closeable {
     private val stream = FileInputStream(filename)
 
     init {
@@ -25,7 +26,7 @@ class FileInputStream(private val filename: String) : InputStreamImpl() {
         return stream.read()
     }
 
-    fun close() {
+    override fun close() {
         stream.close()
     }
 }
