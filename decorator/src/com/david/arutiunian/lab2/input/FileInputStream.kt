@@ -1,17 +1,16 @@
 package com.david.arutiunian.lab2.input
 
 import java.io.Closeable
-import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
 
-class FileInputStream(private val filename: String) : InputStreamImpl(), Closeable {
+class FileInputStream(filename: String) : InputStreamImpl(), Closeable {
     private val stream = FileInputStream(filename)
 
     init {
-        val file = File(filename)
-
-        if (!file.canRead()) {
+        if (!Files.isReadable(Path.of(filename))) {
             throw IOException("Failed to open $filename")
         }
     }
@@ -20,7 +19,7 @@ class FileInputStream(private val filename: String) : InputStreamImpl(), Closeab
 
     override fun readByte(): Int {
         if (isEOF()) {
-            throw IOException("Failed to load next byte from $filename")
+            throw IOException("Failed to load next byte")
         }
 
         return stream.read()
