@@ -12,21 +12,16 @@ import javax.swing.JComponent
 import java.awt.Shape as JavaAwtShape
 
 class JSwingCanvas : JComponent(), Canvas {
-    private var mColor = Color.BLACK
-    private val mItems: ArrayList<JavaAwtShape> = ArrayList()
+    private val mItems: ArrayList<Pair<JavaAwtShape, Color>> = ArrayList()
 
-    override fun setColor(color: Color) {
-        mColor = color
-    }
-
-    override fun drawLine(from: Point, to: Point) {
+    override fun drawLine(from: Point, to: Point, color: Color) {
         val line = Line2D.Double(from.x, from.y, to.x, to.y)
-        mItems.add(line)
+        mItems.add(Pair(line, color))
     }
 
-    override fun drawEllipse(center: Point, width: Double, height: Double) {
+    override fun drawEllipse(center: Point, width: Double, height: Double, color: Color) {
         val ellipse = Ellipse2D.Double(center.x, center.y, width, height)
-        mItems.add(ellipse)
+        mItems.add(Pair(ellipse, color))
     }
 
     override fun paintComponent(g: Graphics?) {
@@ -41,8 +36,8 @@ class JSwingCanvas : JComponent(), Canvas {
         g2d.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON)
 
         for (item in mItems) {
-            g2d.color = mColor
-            g2d.draw(item)
+            g2d.color = item.second
+            g2d.draw(item.first)
         }
     }
 }

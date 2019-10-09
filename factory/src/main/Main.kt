@@ -1,9 +1,9 @@
 package main
 
 import main.canvas.JSwingCanvas
-import main.designer.DesignerImpl
-import main.painter.PainterImpl
-import main.shape.ShapeFactoryImpl
+import main.designer.CanvasDesigner
+import main.painter.CanvasPainter
+import main.shape.CanvasShapeFactory
 import java.util.*
 import javax.swing.JComponent
 import javax.swing.JFrame
@@ -16,9 +16,9 @@ const val FRAME_HEIGHT = 720
 
 fun main() {
     val scanner = Scanner(System.`in`)
-    val painter = PainterImpl()
-    val factory = ShapeFactoryImpl()
-    val designer = DesignerImpl(factory)
+    val painter = CanvasPainter()
+    val factory = CanvasShapeFactory()
+    val designer = CanvasDesigner(factory)
     val canvas = JSwingCanvas()
 
     try {
@@ -27,7 +27,7 @@ fun main() {
 
         SwingUtilities.invokeLater { initUI(canvas) }
     } catch (ex: Exception) {
-        println("OOPS...")
+        ex.printStackTrace()
     }
 }
 

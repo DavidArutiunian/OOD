@@ -5,6 +5,4 @@ import java.awt.Color
 
 interface Shape {
     fun draw(canvas: Canvas)
-
-    fun getColor(): Color
 }
