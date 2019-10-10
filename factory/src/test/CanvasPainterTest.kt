@@ -1,5 +1,3 @@
-package test.java
-
 import com.nhaarman.mockitokotlin2.*
 import main.Point
 import main.canvas.Canvas

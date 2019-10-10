@@ -1,5 +1,3 @@
-package test.java
-
 import com.nhaarman.mockitokotlin2.*
 import main.Point
 import main.designer.CanvasDesigner
@@ -68,17 +66,17 @@ internal class CanvasDesignerTest {
 
         val expectedShapeCount = 1
         assertEquals(expectedShapeCount, draft.getShapeCount())
-        val actualRectangle = draft.getShape(0)
-        assertThat(actualRectangle, `is`(ellipse as Shape))
+        val actualEllipse = draft.getShape(0)
+        assertThat(actualEllipse, `is`(ellipse as Shape))
 
         val actualDescription = captor.firstValue
         assertEquals(description, actualDescription)
     }
 
     @Test
-    fun `designer creates draft with yellow polygon`() {
+    fun `designer creates draft with green polygon`() {
         val captor = argumentCaptor<String>()
-        val description = "polygon 10 10 20 10 20 20 10 20 50 50 40 40 yellow"
+        val description = "polygon 10 10 20 10 20 20 10 20 50 50 40 40 green"
 
         val polygon = RegularPolygon(
             listOf(
@@ -102,8 +100,8 @@ internal class CanvasDesignerTest {
 
         val expectedShapeCount = 1
         assertEquals(expectedShapeCount, draft.getShapeCount())
-        val actualRectangle = draft.getShape(0)
-        assertThat(actualRectangle, `is`(polygon as Shape))
+        val actualPolygon = draft.getShape(0)
+        assertThat(actualPolygon, `is`(polygon as Shape))
 
         val actualDescription = captor.firstValue
         assertEquals(description, actualDescription)
@@ -133,8 +131,8 @@ internal class CanvasDesignerTest {
 
         val expectedShapeCount = 1
         assertEquals(expectedShapeCount, draft.getShapeCount())
-        val actualRectangle = draft.getShape(0)
-        assertThat(actualRectangle, `is`(triangle as Shape))
+        val actualTriangle = draft.getShape(0)
+        assertThat(actualTriangle, `is`(triangle as Shape))
 
         val actualDescription = captor.firstValue
         assertEquals(description, actualDescription)
@@ -182,7 +180,7 @@ internal class CanvasDesignerTest {
     }
 
     @Test
-    fun `designer throws if shape not defined`() {
+    fun `designer throws if unknown shape`() {
         val captor = argumentCaptor<String>()
         val description = "convex 10 10 10 50 25 50 blue\n"
 
@@ -190,6 +188,7 @@ internal class CanvasDesignerTest {
 
         val scanner = Scanner("$description\ndraw")
         val factory = mock<ShapeFactory> {
+            // cannot use IOException cause it's checked :(
             on { createShape(captor.capture()) } doThrow RuntimeException(message)
         }
         val designer = CanvasDesigner(factory)
