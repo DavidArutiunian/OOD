@@ -87,7 +87,7 @@ class HTMLDocument : Document {
             when {
                 item.getImage() != null -> {
                     val image = item.getImage()!!
-                    image.saveTo(IMAGE_DIR)
+                    image.saveTo(path, IMAGE_DIR)
                     result.append("\t<img alt=\"\" src=\"${image.getPath()}\" width=\"${image.getWidth()}\" height=\"${image.getHeight()}\"/>\n")
                 }
                 item.getParagraph() != null -> {

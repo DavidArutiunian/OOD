@@ -11,5 +11,5 @@ interface Image {
 
     fun resize(width: Int, height: Int)
 
-    fun saveTo(dir: Path)
+    fun saveTo(basePath: Path, dirPath: Path)
 }
