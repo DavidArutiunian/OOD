@@ -65,4 +65,6 @@ fun main() {
     }
 
     document.save(Path.of("build/index.html"))
+
+    document.flush()
 }

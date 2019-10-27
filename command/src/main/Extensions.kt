@@ -1,3 +1,4 @@
+import java.io.File
 import java.math.BigInteger
 import java.nio.file.Path
 import java.security.MessageDigest
@@ -15,4 +16,20 @@ fun Path.ext(): String {
         .filter { f -> f.contains(".") }
         .map { f -> f.substring(filename.lastIndexOf(".") + 1) }
         .get()
+}
+
+fun deleteDirectory(dir: File): Boolean {
+    if (dir.isDirectory) {
+        val children = dir.listFiles()
+        if (children.isNullOrEmpty()) {
+            return dir.delete()
+        }
+        for (child in children) {
+            val success = deleteDirectory(child)
+            if (!success) {
+                return false;
+            }
+        }
+    }
+    return dir.delete()
 }

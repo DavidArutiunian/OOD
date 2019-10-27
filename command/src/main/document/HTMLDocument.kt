@@ -2,12 +2,15 @@ package document
 
 import command.Command
 import command.InsertItem
+import deleteDirectory
 import document_item.DocumentItem
 import document_item.HTMLDocumentItem
 import image.HTMLImage
 import image.Image
 import paragraph.HTMLParagraph
 import paragraph.Paragraph
+import java.io.Flushable
+import java.io.IOException
 import java.io.OutputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -15,9 +18,20 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.max
 
-class HTMLDocument : Document {
+class HTMLDocument : Document, Flushable {
     companion object {
         val IMAGE_DIR = Path.of("images")!!
+        val TEMP_DIR = Path.of(".tmp")!!
+    }
+
+    init {
+        if (Files.notExists(TEMP_DIR)) {
+            Files.createDirectory(TEMP_DIR)
+        }
+    }
+
+    override fun flush() {
+        deleteDirectory(TEMP_DIR.toFile())
     }
 
     private var mTitle = ""
@@ -33,7 +47,8 @@ class HTMLDocument : Document {
     }
 
     override fun insertImage(path: Path, width: Int, height: Int, position: Int?): Image {
-        val image = HTMLImage(path, width, height)
+        val tempImagePath = copyToTemp(path)
+        val image = HTMLImage(tempImagePath, width, height)
         val item = HTMLDocumentItem(image)
         val command = InsertItem(this, item, position)
         addCommandToHistory(command)
@@ -162,5 +177,14 @@ class HTMLDocument : Document {
             }
         }
         return out.toString()
+    }
+
+    private fun copyToTemp(path: Path): Path {
+        if (Files.notExists(path)) {
+            throw IOException("File $path does not exist")
+        }
+        val tempFilePath = Path.of("$TEMP_DIR/${path.fileName}")
+        Files.copy(path, tempFilePath)
+        return tempFilePath
     }
 }

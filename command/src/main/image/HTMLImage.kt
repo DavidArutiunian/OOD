@@ -28,11 +28,11 @@ class HTMLImage(private var mPath: Path, private var mWidth: Int, private var mH
         }
         val fileName = mPath.fileName
         val generatedFileName = "${fileName.md5()}.${fileName.ext()}";
-        val pathToMoved = Path.of("$actual/$fileName")
-        val pathToGenerated = Path.of("$actual/$generatedFileName")
-        Files.deleteIfExists(pathToGenerated)
-        Files.copy(mPath, pathToMoved)
-        Files.move(pathToMoved, pathToGenerated)
+        val pathToMovedFile = Path.of("$actual/$fileName")
+        val pathToGenFile = Path.of("$actual/$generatedFileName")
+        Files.deleteIfExists(pathToGenFile)
+        Files.copy(mPath, pathToMovedFile)
+        Files.move(pathToMovedFile, pathToGenFile)
         mPath = dirPath.resolve(generatedFileName)
     }
 }
