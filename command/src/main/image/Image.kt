@@ -10,4 +10,6 @@ interface Image {
     fun getHeight(): Int
 
     fun resize(width: Int, height: Int)
+
+    fun saveTo(dir: Path)
 }

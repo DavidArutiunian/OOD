@@ -16,6 +16,10 @@ import kotlin.collections.ArrayList
 import kotlin.math.max
 
 class HTMLDocument : Document {
+    companion object {
+        val IMAGE_DIR = Path.of("images")!!
+    }
+
     private var mTitle = ""
     private val mItems = ArrayList<DocumentItem>()
     private val mHistory = Stack<Command>()
@@ -80,14 +84,16 @@ class HTMLDocument : Document {
         result.append("</head>\n")
         result.append("<body>\n")
         mItems.forEach { item ->
-            if (item.getImage() != null) {
-                val image = item.getImage()!!
-                result.append("\t<img alt=\"\" src=\"${image.getPath()}\" width=\"${image.getWidth()}\" height=\"${image.getHeight()}\"/>\n")
-            } else if (item.getParagraph() != null) {
-                val paragraph = item.getParagraph()!!
-                result.append("\t<p>${escape(paragraph.getText())}</p>\n")
-            } else {
-                // WTF???
+            when {
+                item.getImage() != null -> {
+                    val image = item.getImage()!!
+                    image.saveTo(IMAGE_DIR)
+                    result.append("\t<img alt=\"\" src=\"${image.getPath()}\" width=\"${image.getWidth()}\" height=\"${image.getHeight()}\"/>\n")
+                }
+                item.getParagraph() != null -> {
+                    val paragraph = item.getParagraph()!!
+                    result.append("\t<p>${escape(paragraph.getText())}</p>\n")
+                }
             }
         }
         result.append("</body>\n")
@@ -107,15 +113,16 @@ class HTMLDocument : Document {
         val result = StringBuilder()
         result.append("Title: $mTitle\n")
         mItems.forEachIndexed { index, item ->
-            if (item.getImage() != null) {
-                val image = item.getImage()!!
-                val path = image.getPath().toAbsolutePath().normalize()
-                result.append("$index. Image: ${image.getWidth()} ${image.getHeight()} $path\n")
-            } else if (item.getParagraph() != null) {
-                val paragraph = item.getParagraph()!!
-                result.append("$index: Paragraph: ${paragraph.getText()}\n")
-            } else {
-                // WTF???
+            when {
+                item.getImage() != null -> {
+                    val image = item.getImage()!!
+                    val path = image.getPath().toAbsolutePath().normalize()
+                    result.append("$index. Image: ${image.getWidth()} ${image.getHeight()} $path\n")
+                }
+                item.getParagraph() != null -> {
+                    val paragraph = item.getParagraph()!!
+                    result.append("$index: Paragraph: ${paragraph.getText()}\n")
+                }
             }
         }
         stream.write(result.toString().toByteArray())

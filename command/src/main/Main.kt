@@ -32,7 +32,7 @@ fun main() {
 
     document.list(System.out)
 
-    document.insertImage(Path.of("image.jpg"), 1200, 800)
+    document.insertImage(Path.of("assets/image.jpg"), 1200, 800)
 
     document.list(System.out)
 
@@ -64,5 +64,5 @@ fun main() {
         document.undo()
     }
 
-    document.save(Path.of("index.html"))
+    document.save(Path.of("build/index.html"))
 }
