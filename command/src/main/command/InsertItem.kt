@@ -33,4 +33,8 @@ class InsertItem(
         mDocument.INTERNAL_deleteItem(mLastPos!!)
         mLastPos = null
     }
+
+    override fun close() {
+        mDocumentItem.close()
+    }
 }

@@ -24,4 +24,6 @@ class DeleteItem(
         val backup = getBackup() ?: return
         mDocument.addItem(backup, mLastPos)
     }
+
+    override fun close() {}
 }

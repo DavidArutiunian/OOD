@@ -23,6 +23,7 @@ class HTMLDocument : Document, Closeable {
     companion object {
         val IMAGE_DIR = Path.of("images")!!
         val TEMP_DIR = Path.of(".tmp")!!
+        const val MAX_STACK_SIZE = 10
     }
 
     init {
@@ -97,29 +98,52 @@ class HTMLDocument : Document, Closeable {
 
     override fun save(path: Path) {
         val output = Files.newOutputStream(path)
-        val result = StringBuilder()
-        result.append("<!doctype html>\n")
-        result.append("<html>\n")
-        result.append("<head>\n")
-        result.append("\t<title>$mTitle</title>\n")
-        result.append("</head>\n")
-        result.append("<body>\n")
-        mItems.forEach { item ->
-            when {
-                item.getImage() != null -> {
-                    val image = item.getImage()!!
-                    image.saveTo(path, IMAGE_DIR)
-                    result.append("\t<img alt=\"\" src=\"${image.getPath()}\" width=\"${image.getWidth()}\" height=\"${image.getHeight()}\"/>\n")
-                }
-                item.getParagraph() != null -> {
-                    val paragraph = item.getParagraph()!!
-                    result.append("\t<p>${paragraph.getText().escape()}</p>\n")
+        output.use {
+            val result = StringBuilder()
+            result.append(
+                """
+                <!doctype html>
+                <html>
+                <head>
+                <title>$mTitle</title>
+                </head>
+                <body>
+                """.trimIndent()
+            )
+            mItems.forEach { item ->
+                when {
+                    item.getImage() != null -> {
+                        val image = item.getImage()!!
+                        image.saveTo(path, IMAGE_DIR)
+                        result.append(
+                            """
+                            <img 
+                              alt="${image.getPath().fileName}" 
+                              src="${image.getPath()}" 
+                              width="${image.getWidth()}" 
+                              height="${image.getHeight()}"
+                            />
+                            """.trimIndent()
+                        )
+                    }
+                    item.getParagraph() != null -> {
+                        val paragraph = item.getParagraph()!!
+                        result.append(
+                            """
+                            <p>${paragraph.getText().escape()}</p>
+                            """.trimIndent()
+                        )
+                    }
                 }
             }
+            result.append(
+                """
+                </body>
+                </html>
+                """.trimIndent()
+            )
+            output.write(result.toString().toByteArray())
         }
-        result.append("</body>\n")
-        output.write(result.toString().toByteArray())
-        output.flush()
     }
 
     override fun addItem(item: DocumentItem, position: Int?) {
@@ -167,7 +191,13 @@ class HTMLDocument : Document, Closeable {
 
     private fun addCommandToHistory(command: Command) {
         command.execute()
+        mHistory.takeWhile { !it.executed() }.forEach { it.close() }
         mHistory.removeAll { !it.executed() }
+        if (mHistory.size == MAX_STACK_SIZE) {
+            val first = mHistory.first()
+            first.close();
+            mHistory.remove(first)
+        }
         mHistory.add(command)
     }
 

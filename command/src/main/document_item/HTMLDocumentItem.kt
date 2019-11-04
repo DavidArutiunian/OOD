@@ -2,6 +2,7 @@ package document_item
 
 import image.Image
 import paragraph.Paragraph
+import java.nio.file.Files
 
 class HTMLDocumentItem : DocumentItem {
     private var mImage: Image? = null
@@ -18,4 +19,10 @@ class HTMLDocumentItem : DocumentItem {
     override fun getImage() = mImage
 
     override fun getParagraph() = mParagraph
+
+    override fun close() {
+        if (mImage != null) {
+            Files.deleteIfExists(mImage!!.getPath())
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package command
 
-interface Command {
+import java.io.Closeable
+
+interface Command : Closeable {
     fun execute()
 
     fun unexecute()
