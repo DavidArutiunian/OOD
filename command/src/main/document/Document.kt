@@ -17,6 +17,8 @@ interface Document {
 
     fun getItem(position: Int): DocumentItem
 
+    fun INTERNAL_deleteItem(position: Int)
+
     fun deleteItem(position: Int)
 
     fun addItem(item: DocumentItem, position: Int?)

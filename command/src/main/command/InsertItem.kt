@@ -30,7 +30,7 @@ class InsertItem(
     }
 
     override fun doUnexecute() {
-        mDocument.deleteItem(mLastPos!!)
+        mDocument.INTERNAL_deleteItem(mLastPos!!)
         mLastPos = null
     }
 }

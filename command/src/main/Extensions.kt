@@ -1,4 +1,3 @@
-import java.io.File
 import java.math.BigInteger
 import java.nio.file.Path
 import java.security.MessageDigest
@@ -18,18 +17,16 @@ fun Path.ext(): String {
         .get()
 }
 
-fun deleteDirectory(dir: File): Boolean {
-    if (dir.isDirectory) {
-        val children = dir.listFiles()
-        if (children.isNullOrEmpty()) {
-            return dir.delete()
-        }
-        for (child in children) {
-            val success = deleteDirectory(child)
-            if (!success) {
-                return false;
-            }
+fun String.escape(): String {
+    val out = StringBuilder(kotlin.math.max(16, this.length))
+    for (element in this) {
+        if (element.toInt() > 127 || element == '"' || element == '<' || element == '>' || element == '&') {
+            out.append("&#")
+            out.append(element.toInt())
+            out.append(';')
+        } else {
+            out.append(element)
         }
     }
-    return dir.delete()
+    return out.toString()
 }

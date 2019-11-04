@@ -1,24 +1,25 @@
 package document
 
 import command.Command
+import command.DeleteItem
 import command.InsertItem
 import deleteDirectory
 import document_item.DocumentItem
 import document_item.HTMLDocumentItem
+import escape
 import image.HTMLImage
 import image.Image
 import paragraph.HTMLParagraph
 import paragraph.Paragraph
-import java.io.Flushable
+import java.io.Closeable
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.max
 
-class HTMLDocument : Document, Flushable {
+class HTMLDocument : Document, Closeable {
     companion object {
         val IMAGE_DIR = Path.of("images")!!
         val TEMP_DIR = Path.of(".tmp")!!
@@ -30,7 +31,7 @@ class HTMLDocument : Document, Flushable {
         }
     }
 
-    override fun flush() {
+    override fun close() {
         deleteDirectory(TEMP_DIR.toFile())
     }
 
@@ -63,8 +64,13 @@ class HTMLDocument : Document, Flushable {
         mItems[position] = item
     }
 
-    override fun deleteItem(position: Int) {
+    override fun INTERNAL_deleteItem(position: Int) {
         mItems.removeAt(position)
+    }
+
+    override fun deleteItem(position: Int) {
+        val command = DeleteItem(this, position)
+        addCommandToHistory(command)
     }
 
     override fun getTitle() = mTitle
@@ -107,7 +113,7 @@ class HTMLDocument : Document, Flushable {
                 }
                 item.getParagraph() != null -> {
                     val paragraph = item.getParagraph()!!
-                    result.append("\t<p>${escape(paragraph.getText())}</p>\n")
+                    result.append("\t<p>${paragraph.getText().escape()}</p>\n")
                 }
             }
         }
@@ -163,20 +169,6 @@ class HTMLDocument : Document, Flushable {
         command.execute()
         mHistory.removeAll { !it.executed() }
         mHistory.add(command)
-    }
-
-    private fun escape(string: String): String {
-        val out = StringBuilder(max(16, string.length))
-        for (element in string) {
-            if (element.toInt() > 127 || element == '"' || element == '<' || element == '>' || element == '&') {
-                out.append("&#")
-                out.append(element.toInt())
-                out.append(';')
-            } else {
-                out.append(element)
-            }
-        }
-        return out.toString()
     }
 
     private fun copyToTemp(path: Path): Path {
