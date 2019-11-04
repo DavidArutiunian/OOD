@@ -1,26 +1,95 @@
 import document.HTMLDocument
 import java.nio.file.Path
+import java.util.*
 
 fun main() {
     val document = HTMLDocument()
+    val scanner = Scanner(System.`in`)
 
-    document.use {
-        document.setTitle("HTML Document")
-
-        document.insertParagraph("Hello, World!")
-
-        document.insertParagraph(
-            "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
-                "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " +
-                "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
-                "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\""
-        )
-
-        document.insertImage(Path.of("assets/image.jpg"), 1200, 800)
-
-        document.list(System.out)
-
-        document.save(Path.of("build/index.html"))
+    arrayOf(document, scanner).use {
+        while (scanner.hasNext()) {
+            when (scanner.next()) {
+                "InsertParagraph" -> {
+                    val pos = scanner.next().toIntOrNull()
+                    val text = scanner.nextLine().trim()
+                    document.insertParagraph(text, pos)
+                }
+                "InsertImage" -> {
+                    val pos = scanner.next().toIntOrNull()
+                    val width = scanner.next().toInt()
+                    val height = scanner.next().toInt()
+                    val path = scanner.next()
+                    document.insertImage(Path.of(path), width, height, pos)
+                }
+                "SetTitle" -> {
+                    val title = scanner.nextLine().trim()
+                    document.setTitle(title)
+                }
+                "List" -> document.list(System.out)
+                "ReplaceText" -> {
+                    val pos = scanner.next().toInt()
+                    val text = scanner.nextLine().trim()
+                    document.replaceText(pos, text)
+                }
+                "ResizeImage" -> {
+                    val pos = scanner.next().toInt()
+                    val width = scanner.next().toInt()
+                    val height = scanner.next().toInt()
+                    document.resizeImage(pos, width, height)
+                }
+                "DeleteItem" -> {
+                    val pos = scanner.next().toInt()
+                    document.deleteItem(pos)
+                }
+                "Undo" -> if (document.canUndo()) document.undo()
+                "Redo" -> if (document.canRedo()) document.redo()
+                "Save" -> {
+                    val path = scanner.next()
+                    document.save(Path.of(path))
+                }
+                "Help" -> {
+                    println(
+                        """
+• InsertParagraph <позиция>|end <текст параграфа>
+    o Вставляет в указанную позицию документа параграф с указанным текстом. В качестве позиции вставки можно указать либо порядковый номер блока, либо end для вставки параграфа в конец.
+    o В случае, если номер позиции превышает количество элементов в документе, пользователю выдается сообщение об ошибке, а команда игнорируется.
+• InsertImage <позиция>|end <ширина> <высота> <путь к файлу изображения>
+    o Вставляет в указанную позицию документа изображение, находящееся по указанному пути. При вставке указывается ширина и высота, что позволяет разместить изображение с указанным масштабом.
+    o При вставке файл изображения должен копироваться в подкаталог images каталога, в котором содержится рабочая версия документа. Имя для изображения должно быть сгенерировано автоматически, а расширение остаться оригинальным. 
+ Такой подход позволяет обеспечить целостность изображений после их вставки в документ, даже если исходный файл изображения будет удален или заменен другим.
+    o Допустимые размеры изображения находятся в диапазоне от 1 до 10000 пикселей включительно по каждой из координатных осей.
+    o Если номер позиции превышает количество элементов в документе, пользователю выдается сообщение об ошибке, а команда игнорируется
+• SetTitle <заголовок документа>
+    o Изменяет заголовок документа
+• List
+    o Выводит название и список элементов документа в стандартный поток вывода. Пример вывода
+         Title: Это заголовок документа
+         0. Paragraph: Это самый первый параграф
+         1. Image: 400 300 images/img1.png
+         2. Paragraph: Это параграф, идущий следом за изображением.
+• ReplaceText <позиция> <текст параграфа>
+    o Заменяет текст в параграфе, находящемся в указанной позиции документа. Если в данной позиции не находится параграф, выдается сообщение об ошибке, а команда игнорируется.
+    o Если номер позиции больше или равен количеству элементов в документе, пользователю выдается сообщение об ошибке, а команда игнорируется.
+• ResizeImage <позиция> <ширина> <высота>
+    o Изменяет размер изображения, находящегося в указанной позиции документа. Если в данной позиции не находится  изображение, выдается сообщение об ошибке
+• DeleteItem <позиция>
+    o Удаляет элемент документа, находящийся в указанной позиции. Если указана недопустимая позиция документа, команда игнорируется, а пользователю выводится сообщение об ошибке.
+• Help
+    o выводит справку о доступных командах редактирования и их аргументах
+• Undo
+    o Отменяет действие ранее введенной команды редактирования, возвращая документ в предыдущее состояние. 
+    o Если операция отмены недоступна, выводится сообщение об ошибке.
+• Redo
+    o Выполняет ранее отмененную команду редактирования, возвращая документ в состояние, отменяет действие команды Undo.
+    o Если операция Redo недоступна, выводится сообщение об ошибке.
+• Save <путь>
+    o Сохраняет текущее состояние документа в файл формата html с изображениями. Файлы изображений должны сохраняться в подкаталоге images внутри каталога с html-файлом. В самом html-файле должны задаваться относительные пути к изображениям.
+    o Т.к. некоторые символы в HTML имеют специальное значение, при сохранении текстовой информации (параграфы, заголовок документа, имена файлов изображений) нужно кодировать символы: <, >, “, ‘, &. 
+                        """.trimIndent()
+                    )
+                }
+                "Exit" -> return@use
+            }
+        }
     }
 }

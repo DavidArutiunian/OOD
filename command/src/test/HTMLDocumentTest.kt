@@ -436,4 +436,32 @@ internal class HTMLDocumentTest {
             }
         }
     }
+
+    @Test
+    fun `test`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertParagraph(SAMPLE_TEXT)
+            document.insertImage(Path.of(ASSET_PATH), 1200, 800)
+
+            document.replaceText(0, "Hello, World!!!")
+
+            document.undo()
+
+            run {
+                val item = document.getItem(0)
+                val paragraph = item.getParagraph()!!
+                assertEquals(SAMPLE_TEXT, paragraph.getText())
+            }
+
+            run {
+                val item = document.getItem(1)
+                val image = item.getImage()!!
+                assertEquals(Path.of(TMP_ASSET_PATH).toString(), image.getPath().toString())
+            }
+
+            document.redo()
+        }
+    }
 }

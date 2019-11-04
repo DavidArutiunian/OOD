@@ -178,7 +178,7 @@ class HTMLDocument : Document, Closeable {
         if (item.getImage() != null) {
             val image = item.getImage()!!
             image.resize(width, height)
-            val command = InsertItem(this, item, position)
+            val command = InsertItem(this, item, position, true)
             addCommandToHistory(command)
         }
     }
@@ -188,7 +188,7 @@ class HTMLDocument : Document, Closeable {
         if (item.getParagraph() != null) {
             val paragraph = item.getParagraph()!!
             paragraph.setText(text)
-            val command = InsertItem(this, item, position)
+            val command = InsertItem(this, item, position, true)
             addCommandToHistory(command)
         }
     }

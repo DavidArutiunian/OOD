@@ -1,3 +1,4 @@
+import java.io.Closeable
 import java.math.BigInteger
 import java.nio.file.Path
 import java.security.MessageDigest
@@ -15,6 +16,27 @@ fun Path.ext(): String {
         .filter { f -> f.contains(".") }
         .map { f -> f.substring(filename.lastIndexOf(".") + 1) }
         .get()
+}
+
+fun <T : Closeable?> Array<T>.use(block: () -> Unit) {
+    var exception: Throwable? = null
+    try {
+        return block()
+    } catch (e: Throwable) {
+        exception = e
+        throw e
+    } finally {
+        when (exception) {
+            null -> forEach { it?.close() }
+            else -> forEach {
+                try {
+                    it?.close()
+                } catch (closeException: Throwable) {
+                    exception.addSuppressed(closeException)
+                }
+            }
+        }
+    }
 }
 
 fun String.escape(): String {
