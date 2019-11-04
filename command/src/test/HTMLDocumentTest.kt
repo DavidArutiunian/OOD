@@ -24,10 +24,10 @@ internal class HTMLDocumentTest {
 
             val item = document.getItem(0)
 
-            assertTrue(item.getImage() != null)
-            assertEquals(Path.of(".tmp/image.jpg").toString(), item.getImage()?.getPath().toString())
-            assertEquals(1200, item.getImage()?.getWidth())
-            assertEquals(800, item.getImage()?.getHeight())
+            val image = item.getImage()!!
+            assertEquals(Path.of(".tmp/image.jpg").toString(), image.getPath().toString())
+            assertEquals(1200, image.getWidth())
+            assertEquals(800, image.getHeight())
         }
     }
 
@@ -40,8 +40,8 @@ internal class HTMLDocumentTest {
 
             val item = document.getItem(0)
 
-            assertTrue(item.getParagraph() != null)
-            assertEquals(SAMPLE_TEXT, item.getParagraph()?.getText())
+            val paragraph = item.getParagraph()!!
+            assertEquals(SAMPLE_TEXT, paragraph.getText())
         }
     }
 
@@ -188,10 +188,8 @@ internal class HTMLDocumentTest {
             document.insertParagraph(text, 0)
 
             val item = document.getItem(0)
-
-            val paragraph = item.getParagraph()
-            assertTrue(paragraph != null)
-            assertEquals(paragraph?.getText(), text)
+            val paragraph = item.getParagraph()!!
+            assertEquals(paragraph.getText(), text)
         }
     }
 
@@ -295,10 +293,8 @@ internal class HTMLDocumentTest {
             document.replaceText(0, text)
 
             val item = document.getItem(0)
-
-            val paragraph = item.getParagraph()
-            assertTrue(paragraph != null)
-            assertEquals(paragraph?.getText(), text)
+            val paragraph = item.getParagraph()!!
+            assertEquals(paragraph.getText(), text)
         }
     }
 
@@ -314,19 +310,16 @@ internal class HTMLDocumentTest {
 
             run {
                 val item = document.getItem(0)
-
-                val paragraph = item.getParagraph()
-                assertTrue(paragraph != null)
-                assertEquals(paragraph?.getText(), text)
+                val paragraph = item.getParagraph()!!
+                assertEquals(paragraph.getText(), text)
             }
 
             document.undo()
 
             run {
                 val item = document.getItem(0)
-
-                val paragraph = item.getParagraph()
-                assertEquals(paragraph?.getText(), SAMPLE_TEXT)
+                val paragraph = item.getParagraph()!!
+                assertEquals(paragraph.getText(), SAMPLE_TEXT)
             }
         }
     }
@@ -343,28 +336,103 @@ internal class HTMLDocumentTest {
 
             run {
                 val item = document.getItem(0)
-
-                val paragraph = item.getParagraph()
-                assertTrue(paragraph != null)
-                assertEquals(paragraph?.getText(), text)
+                val paragraph = item.getParagraph()!!
+                assertEquals(paragraph.getText(), text)
             }
 
             document.undo()
 
             run {
                 val item = document.getItem(0)
-
-                val paragraph = item.getParagraph()
-                assertEquals(paragraph?.getText(), SAMPLE_TEXT)
+                val paragraph = item.getParagraph()!!
+                assertEquals(paragraph.getText(), SAMPLE_TEXT)
             }
 
             document.redo()
 
             run {
                 val item = document.getItem(0)
+                val paragraph = item.getParagraph()!!
+                assertEquals(paragraph.getText(), text)
+            }
+        }
+    }
 
-                val paragraph = item.getParagraph()
-                assertEquals(paragraph?.getText(), text)
+    @Test
+    fun `should resize image`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertImage(Path.of(ASSET_PATH), 1200, 800)
+
+            document.resizeImage(0, 1400, 600)
+
+            val item = document.getItem(0)
+            val image = item.getImage()!!
+            assertEquals(image.getWidth(), 1400)
+            assertEquals(image.getHeight(), 600)
+        }
+    }
+
+    @Test
+    fun `should resize image and undo to initial size`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertImage(Path.of(ASSET_PATH), 1200, 800)
+
+            document.resizeImage(0, 1400, 600)
+
+            run {
+                val item = document.getItem(0)
+                val image = item.getImage()!!
+                assertEquals(image.getWidth(), 1400)
+                assertEquals(image.getHeight(), 600)
+            }
+
+            document.undo()
+
+            run {
+                val item = document.getItem(0)
+                val image = item.getImage()!!
+                assertEquals(image.getWidth(), 1200)
+                assertEquals(image.getHeight(), 800)
+            }
+        }
+    }
+
+    @Test
+    fun `should return back to changed size if document was undone and redone`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertImage(Path.of(ASSET_PATH), 1200, 800)
+
+            document.resizeImage(0, 1400, 600)
+
+            run {
+                val item = document.getItem(0)
+                val image = item.getImage()!!
+                assertEquals(image.getWidth(), 1400)
+                assertEquals(image.getHeight(), 600)
+            }
+
+            document.undo()
+
+            run {
+                val item = document.getItem(0)
+                val image = item.getImage()!!
+                assertEquals(image.getWidth(), 1200)
+                assertEquals(image.getHeight(), 800)
+            }
+
+            document.redo()
+
+            run {
+                val item = document.getItem(0)
+                val image = item.getImage()!!
+                assertEquals(image.getWidth(), 1400)
+                assertEquals(image.getHeight(), 600)
             }
         }
     }

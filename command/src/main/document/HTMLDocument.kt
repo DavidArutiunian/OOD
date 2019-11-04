@@ -174,10 +174,12 @@ class HTMLDocument : Document, Closeable {
     }
 
     override fun resizeImage(position: Int, width: Int, height: Int) {
-        val item = getItem(position)
+        val item = HTMLDocumentItem(getItem(position))
         if (item.getImage() != null) {
             val image = item.getImage()!!
             image.resize(width, height)
+            val command = InsertItem(this, item, position)
+            addCommandToHistory(command)
         }
     }
 
