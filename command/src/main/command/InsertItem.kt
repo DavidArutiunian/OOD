@@ -3,11 +3,11 @@ package command
 import document.Document
 import document_item.DocumentItem
 
-class InsertItem(
-    private val mDocument: Document,
-    private val mDocumentItem: DocumentItem,
-    private val mPosition: Int?
-) : AbstractItem<DocumentItem>() {
+class InsertItem(document: Document, item: DocumentItem, position: Int?) : AbstractItem<DocumentItem>() {
+    private val mDocument = document
+    private val mDocumentItem = item
+    private val mPosition = position
+
     private var mLastPos: Int? = null
 
     override fun doBackup() {

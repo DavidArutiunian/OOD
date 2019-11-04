@@ -283,4 +283,89 @@ internal class HTMLDocumentTest {
             assertFalse(Files.exists(Path.of(TMP_ASSET_PATH)))
         }
     }
+
+    @Test
+    fun `should replace text`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertParagraph(SAMPLE_TEXT)
+
+            val text = "FooBar"
+            document.replaceText(0, text)
+
+            val item = document.getItem(0)
+
+            val paragraph = item.getParagraph()
+            assertTrue(paragraph != null)
+            assertEquals(paragraph?.getText(), text)
+        }
+    }
+
+    @Test
+    fun `should replace text and undo to initial text`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertParagraph(SAMPLE_TEXT)
+
+            val text = "FooBar"
+            document.replaceText(0, text)
+
+            run {
+                val item = document.getItem(0)
+
+                val paragraph = item.getParagraph()
+                assertTrue(paragraph != null)
+                assertEquals(paragraph?.getText(), text)
+            }
+
+            document.undo()
+
+            run {
+                val item = document.getItem(0)
+
+                val paragraph = item.getParagraph()
+                assertEquals(paragraph?.getText(), SAMPLE_TEXT)
+            }
+        }
+    }
+
+    @Test
+    fun `should return back to changed text if document was undone and redone`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertParagraph(SAMPLE_TEXT)
+
+            val text = "FooBar"
+            document.replaceText(0, text)
+
+            run {
+                val item = document.getItem(0)
+
+                val paragraph = item.getParagraph()
+                assertTrue(paragraph != null)
+                assertEquals(paragraph?.getText(), text)
+            }
+
+            document.undo()
+
+            run {
+                val item = document.getItem(0)
+
+                val paragraph = item.getParagraph()
+                assertEquals(paragraph?.getText(), SAMPLE_TEXT)
+            }
+
+            document.redo()
+
+            run {
+                val item = document.getItem(0)
+
+                val paragraph = item.getParagraph()
+                assertEquals(paragraph?.getText(), text)
+            }
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package document_item
 
+import image.HTMLImage
 import image.Image
+import paragraph.HTMLParagraph
 import paragraph.Paragraph
 import java.nio.file.Files
 
@@ -14,6 +16,11 @@ class HTMLDocumentItem : DocumentItem {
 
     constructor(paragraph: Paragraph) {
         mParagraph = paragraph
+    }
+
+    constructor(item: DocumentItem) {
+        mImage = if (item.getImage() != null) HTMLImage(item.getImage()!!) else null
+        mParagraph = if (item.getParagraph() != null) HTMLParagraph(item.getParagraph()!!) else null
     }
 
     override fun getImage() = mImage

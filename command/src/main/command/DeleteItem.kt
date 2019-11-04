@@ -3,10 +3,10 @@ package command
 import document.Document
 import document_item.DocumentItem
 
-class DeleteItem(
-    private val mDocument: Document,
-    private val mPosition: Int
-) : AbstractItem<DocumentItem>() {
+class DeleteItem(document: Document, position: Int) : AbstractItem<DocumentItem>() {
+    private val mDocument = document
+    private val mPosition = position
+
     private var deleting = false
 
     override fun doBackup() {}

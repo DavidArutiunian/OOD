@@ -182,10 +182,12 @@ class HTMLDocument : Document, Closeable {
     }
 
     override fun replaceText(position: Int, text: String) {
-        val item = getItem(position)
+        val item = HTMLDocumentItem(getItem(position))
         if (item.getParagraph() != null) {
             val paragraph = item.getParagraph()!!
             paragraph.setText(text)
+            val command = InsertItem(this, item, position)
+            addCommandToHistory(command)
         }
     }
 
