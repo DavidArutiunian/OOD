@@ -17,6 +17,7 @@ interface Document {
 
     fun getItem(position: Int): DocumentItem
 
+    @Suppress("FunctionName")
     fun INTERNAL_deleteItem(position: Int)
 
     fun deleteItem(position: Int)

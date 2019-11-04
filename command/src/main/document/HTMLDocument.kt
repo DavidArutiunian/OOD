@@ -49,7 +49,7 @@ class HTMLDocument : Document, Closeable {
     }
 
     override fun insertImage(path: Path, width: Int, height: Int, position: Int?): Image {
-        val tempImagePath = copyToTemp(path)
+        val tempImagePath = copyToTempImageDir(path)
         val image = HTMLImage(tempImagePath, width, height)
         val item = HTMLDocumentItem(image)
         val command = InsertItem(this, item, position)
@@ -190,18 +190,18 @@ class HTMLDocument : Document, Closeable {
     }
 
     private fun addCommandToHistory(command: Command) {
+        if (mHistory.size == MAX_STACK_SIZE) {
+            val first = mHistory.first()
+            first.close()
+            mHistory.remove(first)
+        }
         command.execute()
         mHistory.takeWhile { !it.executed() }.forEach { it.close() }
         mHistory.removeAll { !it.executed() }
-        if (mHistory.size == MAX_STACK_SIZE) {
-            val first = mHistory.first()
-            first.close();
-            mHistory.remove(first)
-        }
         mHistory.add(command)
     }
 
-    private fun copyToTemp(path: Path): Path {
+    private fun copyToTempImageDir(path: Path): Path {
         if (Files.notExists(path)) {
             throw IOException("File $path does not exist")
         }

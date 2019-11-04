@@ -7,7 +7,7 @@ class DeleteItem(
     private val mDocument: Document,
     private val mPosition: Int
 ) : AbstractItem<DocumentItem>() {
-    private var mLastPos: Int? = null
+    private var deleting = false
 
     override fun doBackup() {}
 
@@ -17,13 +17,19 @@ class DeleteItem(
 
     override fun doExecute() {
         mDocument.INTERNAL_deleteItem(mPosition)
-        mLastPos = mPosition
+        deleting = true
     }
 
     override fun doUnexecute() {
         val backup = getBackup() ?: return
-        mDocument.addItem(backup, mLastPos)
+        mDocument.addItem(backup, mPosition)
+        deleting = false
     }
 
-    override fun close() {}
+    override fun close() {
+        if (deleting) {
+            val item = getBackup()
+            item?.close()
+        }
+    }
 }

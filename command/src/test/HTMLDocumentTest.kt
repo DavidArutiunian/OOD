@@ -65,7 +65,7 @@ internal class HTMLDocumentTest {
     }
 
     @Test
-    fun `should remove image if remove from stack after rotation`() {
+    fun `should not remove image if remove from stack after rotation`() {
         val document = HTMLDocument()
 
         document.use {
@@ -75,7 +75,7 @@ internal class HTMLDocumentTest {
                 document.insertParagraph("Paragraph #${i + 1}")
             }
 
-            assertFalse(Files.exists(Path.of(TMP_ASSET_PATH)))
+            assertTrue(Files.exists(Path.of(TMP_ASSET_PATH)))
         }
     }
 
@@ -225,6 +225,62 @@ internal class HTMLDocumentTest {
             assertThrows<IndexOutOfBoundsException> {
                 document.deleteItem(1)
             }
+        }
+    }
+
+    @Test
+    fun `should remove asset if delete command was done and rotated over`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertImage(Path.of(ASSET_PATH), 1200, 800)
+
+            document.deleteItem(0)
+
+            for (i in 0 until MAX_STACK_SIZE) {
+                document.insertParagraph(SAMPLE_TEXT)
+            }
+
+            assertFalse(Files.exists(Path.of(TMP_ASSET_PATH)))
+        }
+    }
+
+    @Test
+    fun `should not remove asset if delete command was undone and rotated over`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertImage(Path.of(ASSET_PATH), 1200, 800)
+
+            document.deleteItem(0)
+
+            document.undo()
+
+            for (i in 0 until MAX_STACK_SIZE) {
+                document.insertParagraph(SAMPLE_TEXT)
+            }
+
+            assertTrue(Files.exists(Path.of(TMP_ASSET_PATH)))
+        }
+    }
+
+    @Test
+    fun `should not remove asset if delete command was undone and redone and rotated over`() {
+        val document = HTMLDocument()
+
+        document.use {
+            document.insertImage(Path.of(ASSET_PATH), 1200, 800)
+
+            document.deleteItem(0)
+
+            document.undo()
+            document.redo()
+
+            for (i in 0 until MAX_STACK_SIZE) {
+                document.insertParagraph(SAMPLE_TEXT)
+            }
+
+            assertFalse(Files.exists(Path.of(TMP_ASSET_PATH)))
         }
     }
 }

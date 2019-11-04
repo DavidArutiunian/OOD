@@ -34,7 +34,5 @@ class InsertItem(
         mLastPos = null
     }
 
-    override fun close() {
-        mDocumentItem.close()
-    }
+    override fun close() {}
 }
