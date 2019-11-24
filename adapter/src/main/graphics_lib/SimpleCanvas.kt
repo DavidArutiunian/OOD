@@ -1,6 +1,6 @@
 package graphics_lib
 
-class SimpleCanvas: Canvas {
+open class SimpleCanvas: Canvas {
     override fun moveTo(x: Int, y: Int) {
         println("MoveTo ($x, $y)")
     }

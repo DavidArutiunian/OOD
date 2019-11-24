@@ -24,4 +24,10 @@ fun paintPictureOnCanvas() {
 
 fun paintPictureOnModernGraphicsRenderer() {
     val renderer = modern_graphics_lib.ModernGraphicsRenderer(System.out)
+    renderer.beginDraw()
+    renderer.use {
+        val canvas = SimpleCanvasAdapter(it)
+        val painter = ModernGraphicsRendererAdapter(canvas)
+        paintPicture(painter)
+    }
 }

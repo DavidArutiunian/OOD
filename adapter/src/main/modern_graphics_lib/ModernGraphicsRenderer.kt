@@ -24,12 +24,14 @@ class ModernGraphicsRenderer(private val out: OutputStream) : Closeable {
         if (!drawing) {
             throw RuntimeException("DrawLine is allowed between beginDraw()/endDraw() only")
         }
+        out.write("\t".toByteArray());
         out.write(
             """<line fromX="${start.x}" fromY="${start.y}" toX="${end.x}" toY="${end.y}" />""".toByteArray()
         )
+        out.write("\n".toByteArray())
     }
 
-    fun endDraw() {
+    private fun endDraw() {
         if (!drawing) {
             throw RuntimeException("Drawing has not been started")
         }
