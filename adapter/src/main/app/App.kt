@@ -20,3 +20,8 @@ fun paintPictureOnCanvas() {
     val painter = shape_drawing_lib.CanvasPainter(canvas)
     paintPicture(painter)
 }
+
+
+fun paintPictureOnModernGraphicsRenderer() {
+    val renderer = modern_graphics_lib.ModernGraphicsRenderer(System.out)
+}
