@@ -1,9 +1,7 @@
 package shape_drawing_lib
 
-import graphics_lib.Canvas
-
 class Rectangle(private val leftTop: Point, private val width: Int, private val height: Int) : CanvasDrawable {
-    override fun draw(canvas: Canvas) {
+    override fun draw(canvas: graphics_lib.Canvas) {
         canvas.moveTo(leftTop.x, leftTop.y)
         canvas.lineTo(leftTop.x, leftTop.x + width)
         canvas.lineTo(leftTop.x + width, leftTop.y + height)
