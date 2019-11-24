@@ -20,13 +20,16 @@ class ModernGraphicsRenderer(private val out: OutputStream) : Closeable {
         drawing = true
     }
 
-    fun drawLine(start: Point, end: Point) {
+    fun drawLine(start: Point, end: Point, color: RGBAColor = RGBAColor(0.0, 0.0, 0.0, 0.0)) {
         if (!drawing) {
             throw RuntimeException("DrawLine is allowed between beginDraw()/endDraw() only")
         }
-        out.write("\t".toByteArray());
         out.write(
-            """<line fromX="${start.x}" fromY="${start.y}" toX="${end.x}" toY="${end.y}" />""".toByteArray()
+            """
+                <line fromX="${start.x}" fromY="${start.y}" toX="${end.x}" toY="${end.y}" >
+                    <color r="${color.r}" g="${color.g}" b="${color.b}" a="${color.a}" />
+                </line>
+            """.trimIndent().toByteArray()
         )
         out.write("\n".toByteArray())
     }

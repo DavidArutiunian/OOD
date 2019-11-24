@@ -4,11 +4,13 @@ fun paintPicture(painter: shape_drawing_lib.CanvasPainter) {
     val triangle = shape_drawing_lib.Triangle(
         shape_drawing_lib.Point(10, 15),
         shape_drawing_lib.Point(100, 200),
-        shape_drawing_lib.Point(150, 250)
+        shape_drawing_lib.Point(150, 250),
+        0xFFEEBB
     )
     val rectangle = shape_drawing_lib.Rectangle(
         shape_drawing_lib.Point(30, 40),
-        18, 24
+        18, 24,
+        0xAABBCC
     )
 
     painter.draw(triangle)
