@@ -1,4 +1,4 @@
-package app
+package app.object_adapter
 
 class SimpleCanvasAdapter(private val renderer: modern_graphics_lib.ModernGraphicsRenderer) : graphics_lib.Canvas {
     private lateinit var start: modern_graphics_lib.Point

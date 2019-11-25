@@ -1,9 +1,9 @@
 package shape_drawing_lib
 
-import app.SimpleCanvasAdapter
 import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.inOrder
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import graphics_lib.SimpleCanvas
 import modern_graphics_lib.ModernGraphicsRenderer
 import modern_graphics_lib.RGBAColor
@@ -36,7 +36,7 @@ internal class CanvasPainterTest {
     }
 
     @Test
-    fun `painter draws triangle triangle ((10, 15),(100,200),(150,250), 0xFFFFFF) on modern graphics renderer`() {
+    fun `painter draws triangle triangle ((10, 15),(100,200),(150,250), 0xFFFFFF) on modern graphics renderer with object adapter`() {
         val triangle = createTriangle()
 
         val renderer = mock<ModernGraphicsRenderer>()
@@ -59,8 +59,42 @@ internal class CanvasPainterTest {
         )
         doNothing().`when`(renderer).close()
 
-        val canvas = SimpleCanvasAdapter(renderer)
+        val canvas = app.object_adapter.SimpleCanvasAdapter(renderer)
         val painter = CanvasPainter(canvas)
+
+        renderer.beginDraw()
+        renderer.use {
+            painter.draw(triangle)
+        }
+
+        inOrder(renderer) {
+            verify(renderer).beginDraw()
+            verify(renderer).drawLine(
+                modern_graphics_lib.Point(10, 15),
+                modern_graphics_lib.Point(100, 200),
+                RGBAColor(1.0, 1.0, 1.0, 0.0)
+            )
+            verify(renderer).drawLine(
+                modern_graphics_lib.Point(100, 200),
+                modern_graphics_lib.Point(150, 250),
+                RGBAColor(1.0, 1.0, 1.0, 0.0)
+            )
+            verify(renderer).drawLine(
+                modern_graphics_lib.Point(150, 250),
+                modern_graphics_lib.Point(10, 15),
+                RGBAColor(1.0, 1.0, 1.0, 0.0)
+            )
+            verify(renderer).close()
+        }
+    }
+
+    @Test
+    fun `painter draws triangle triangle ((10, 15),(100,200),(150,250), 0xFFFFFF) on modern graphics renderer with class adapter`() {
+        val triangle = createTriangle()
+
+        val renderer = spy(app.class_adapter.SimpleCanvasAdapter())
+
+        val painter = CanvasPainter(renderer)
 
         renderer.beginDraw()
         renderer.use {
@@ -116,7 +150,7 @@ internal class CanvasPainterTest {
     }
 
     @Test
-    fun `painter draws triangle rectangle ((100, 100), 100, 100, 0x000000) on modern graphics renderer`() {
+    fun `painter draws triangle rectangle ((100, 100), 100, 100, 0x000000) on modern graphics renderer with object adapter`() {
         val rectangle = createRectangle()
 
         val renderer = mock<ModernGraphicsRenderer>()
@@ -144,8 +178,47 @@ internal class CanvasPainterTest {
         )
         doNothing().`when`(renderer).close()
 
-        val canvas = SimpleCanvasAdapter(renderer)
+        val canvas = app.object_adapter.SimpleCanvasAdapter(renderer)
         val painter = CanvasPainter(canvas)
+
+        renderer.beginDraw()
+        renderer.use {
+            painter.draw(rectangle)
+        }
+
+        inOrder(renderer) {
+            verify(renderer).beginDraw()
+            verify(renderer).drawLine(
+                modern_graphics_lib.Point(100, 100),
+                modern_graphics_lib.Point(200, 100),
+                RGBAColor(0.0, 0.0, 0.0, 0.0)
+            )
+            verify(renderer).drawLine(
+                modern_graphics_lib.Point(200, 100),
+                modern_graphics_lib.Point(200, 200),
+                RGBAColor(0.0, 0.0, 0.0, 0.0)
+            )
+            verify(renderer).drawLine(
+                modern_graphics_lib.Point(200, 200),
+                modern_graphics_lib.Point(100, 200),
+                RGBAColor(0.0, 0.0, 0.0, 0.0)
+            )
+            verify(renderer).drawLine(
+                modern_graphics_lib.Point(100, 200),
+                modern_graphics_lib.Point(100, 100),
+                RGBAColor(0.0, 0.0, 0.0, 0.0)
+            )
+            verify(renderer).close()
+        }
+    }
+
+    @Test
+    fun `painter draws triangle rectangle ((100, 100), 100, 100, 0x000000) on modern graphics renderer with class adapter`() {
+        val rectangle = createRectangle()
+
+        val renderer = spy(app.class_adapter.SimpleCanvasAdapter())
+
+        val painter = CanvasPainter(renderer)
 
         renderer.beginDraw()
         renderer.use {

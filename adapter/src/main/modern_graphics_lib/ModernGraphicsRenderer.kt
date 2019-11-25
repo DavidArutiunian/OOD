@@ -3,7 +3,7 @@ package modern_graphics_lib
 import java.io.Closeable
 import java.io.OutputStream
 
-class ModernGraphicsRenderer(private val out: OutputStream) : Closeable {
+open class ModernGraphicsRenderer(private val out: OutputStream) : Closeable {
     private var drawing = false
 
     override fun close() {

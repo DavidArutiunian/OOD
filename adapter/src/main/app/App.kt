@@ -1,5 +1,6 @@
 package app
 
+
 fun paintPicture(painter: shape_drawing_lib.CanvasPainter) {
     val triangle = shape_drawing_lib.Triangle(
         shape_drawing_lib.Point(10, 15),
@@ -28,7 +29,7 @@ fun paintPictureOnModernGraphicsRenderer() {
     val renderer = modern_graphics_lib.ModernGraphicsRenderer(System.out)
     renderer.beginDraw()
     renderer.use {
-        val canvas = SimpleCanvasAdapter(it)
+        val canvas = app.object_adapter.SimpleCanvasAdapter(it)
         val painter = shape_drawing_lib.CanvasPainter(canvas)
         paintPicture(painter)
     }
