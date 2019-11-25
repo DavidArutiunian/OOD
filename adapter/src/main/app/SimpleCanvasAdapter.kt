@@ -1,7 +1,6 @@
 package app
 
-class SimpleCanvasAdapter(private val renderer: modern_graphics_lib.ModernGraphicsRenderer) :
-    graphics_lib.SimpleCanvas() {
+class SimpleCanvasAdapter(private val renderer: modern_graphics_lib.ModernGraphicsRenderer) : graphics_lib.Canvas {
     private lateinit var start: modern_graphics_lib.Point
     private lateinit var color: modern_graphics_lib.RGBAColor
 
@@ -9,7 +8,7 @@ class SimpleCanvasAdapter(private val renderer: modern_graphics_lib.ModernGraphi
         val r = (rgb and 0xFF0000 shr 16).toDouble() / 0xFF
         val g = (rgb and 0xFF00 shr 8).toDouble() / 0xFF
         val b = (rgb and 0xFF).toDouble() / 0xFF
-        color = modern_graphics_lib.RGBAColor(r, g, b, 0.0);
+        color = modern_graphics_lib.RGBAColor(r, g, b, 0.0)
     }
 
     override fun moveTo(x: Int, y: Int) {
