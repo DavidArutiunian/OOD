@@ -1,6 +1,5 @@
 package shape_drawing_lib
 
-import app.ModernGraphicsRendererAdapter
 import app.SimpleCanvasAdapter
 import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.inOrder
@@ -61,7 +60,7 @@ internal class CanvasPainterTest {
         doNothing().`when`(renderer).close()
 
         val canvas = SimpleCanvasAdapter(renderer)
-        val painter = ModernGraphicsRendererAdapter(canvas)
+        val painter = CanvasPainter(canvas)
 
         renderer.beginDraw()
         renderer.use {
@@ -146,7 +145,7 @@ internal class CanvasPainterTest {
         doNothing().`when`(renderer).close()
 
         val canvas = SimpleCanvasAdapter(renderer)
-        val painter = ModernGraphicsRendererAdapter(canvas)
+        val painter = CanvasPainter(canvas)
 
         renderer.beginDraw()
         renderer.use {

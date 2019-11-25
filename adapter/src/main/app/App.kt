@@ -29,7 +29,7 @@ fun paintPictureOnModernGraphicsRenderer() {
     renderer.beginDraw()
     renderer.use {
         val canvas = SimpleCanvasAdapter(it)
-        val painter = ModernGraphicsRendererAdapter(canvas)
+        val painter = shape_drawing_lib.CanvasPainter(canvas)
         paintPicture(painter)
     }
 }
