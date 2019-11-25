@@ -12,7 +12,7 @@ class SimpleCanvas {
 + void lineTo(int x, int y)
 }
 
-SimpleCanvas <|.. Canvas
+SimpleCanvas ..|> Canvas
 
 }
 
@@ -22,8 +22,8 @@ interface CanvasDrawable {
 + void draw(graphics_lib.Canvas canvas)
 }
 
-CanvasPainter o-- CanvasDrawable
-CanvasPainter *-- graphics_lib.Canvas
+CanvasPainter ..o CanvasDrawable
+CanvasPainter --* graphics_lib.Canvas
 
 class CanvasPainter {
 - graphics_lib.Canvas canvas
@@ -35,8 +35,8 @@ class Point {
 + int y
 }
 
-Rectangle *-- Point
-Rectangle <|.. CanvasDrawable
+Rectangle --* Point
+Rectangle ..|> CanvasDrawable
 
 class Rectangle {
 - Point leftTop
@@ -46,8 +46,8 @@ class Rectangle {
 + void draw(graphics_lib.Canvas canvas)
 }
 
-Triangle *-- Point
-Triangle <|.. CanvasDrawable
+Triangle --* Point
+Triangle ..|> CanvasDrawable
 
 class Triangle {
 - Point p1
@@ -74,8 +74,8 @@ interface OutputStream {
 + void write(byte b[])
 }
 
-ModernGraphicsRenderer <|.. Closeable
-ModernGraphicsRenderer *-- OutputStream
+ModernGraphicsRenderer ..|> Closeable
+ModernGraphicsRenderer --* OutputStream
 
 class ModernGraphicsRenderer {
 - boolean drawing
@@ -89,8 +89,8 @@ class ModernGraphicsRenderer {
 
 namespace app {
 
-SimpleCanvasAdapter <|-- graphics_lib.SimpleCanvas
-SimpleCanvasAdapter *-- modern_graphics_lib.ModernGraphicsRenderer
+SimpleCanvasAdapter ..|> graphics_lib.Canvas
+SimpleCanvasAdapter --* modern_graphics_lib.ModernGraphicsRenderer
 
 class SimpleCanvasAdapter {
 - modern_graphics_lib.Point start
@@ -98,9 +98,9 @@ class SimpleCanvasAdapter {
 + void lineTo(int x, int y)
 }
 
-ModernGraphicsRendererAdapter <|.. shape_drawing_lib.CanvasPainter
-ModernGraphicsRendererAdapter *-- SimpleCanvasAdapter
-ModernGraphicsRendererAdapter o-- shape_drawing_lib.CanvasDrawable
+ModernGraphicsRendererAdapter ..|> shape_drawing_lib.CanvasPainter
+ModernGraphicsRendererAdapter --* SimpleCanvasAdapter
+ModernGraphicsRendererAdapter ..o shape_drawing_lib.CanvasDrawable
 
 class ModernGraphicsRendererAdapter {
 - SimpleCanvasAdapter canvas
