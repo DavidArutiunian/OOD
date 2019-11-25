@@ -22,8 +22,8 @@ interface CanvasDrawable {
 + void draw(graphics_lib.Canvas canvas)
 }
 
-CanvasPainter ..o CanvasDrawable
-CanvasPainter --* graphics_lib.Canvas
+CanvasPainter ..> CanvasDrawable
+CanvasPainter *-- graphics_lib.Canvas
 
 class CanvasPainter {
 - graphics_lib.Canvas canvas
@@ -35,7 +35,7 @@ class Point {
 + int y
 }
 
-Rectangle --* Point
+Rectangle *-- Point
 Rectangle ..|> CanvasDrawable
 
 class Rectangle {
@@ -46,7 +46,7 @@ class Rectangle {
 + void draw(graphics_lib.Canvas canvas)
 }
 
-Triangle --* Point
+Triangle *-- Point
 Triangle ..|> CanvasDrawable
 
 class Triangle {
@@ -75,8 +75,8 @@ interface OutputStream {
 }
 
 ModernGraphicsRenderer ..|> Closeable
-ModernGraphicsRenderer --* OutputStream
-ModernGraphicsRenderer --o Point
+ModernGraphicsRenderer o-- OutputStream
+ModernGraphicsRenderer ..> Point
 
 class ModernGraphicsRenderer {
 - boolean drawing
