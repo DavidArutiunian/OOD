@@ -1,0 +1,109 @@
+@startuml
+
+namespace graphics_lib {
+
+interface Canvas {
++ void moveTo(int x, int y)
++ void lineTo(int x, int y)
+}
+
+class SimpleCanvas {
++ void moveTo(int x, int y)
++ void lineTo(int x, int y)
+}
+
+SimpleCanvas ..|> Canvas
+
+}
+
+namespace shape_drawing_lib {
+
+interface CanvasDrawable {
++ void draw(graphics_lib.Canvas canvas)
+}
+
+CanvasPainter ..o CanvasDrawable
+CanvasPainter --* graphics_lib.Canvas
+
+class CanvasPainter {
+- graphics_lib.Canvas canvas
++ void draw(CanvasDrawable drawable)
+}
+
+class Point {
++ int x
++ int y
+}
+
+Rectangle --* Point
+Rectangle ..|> CanvasDrawable
+
+class Rectangle {
+- Point leftTop
+- int width
+- int height
++ Rectangle(Point leftTop, int width, int height)
++ void draw(graphics_lib.Canvas canvas)
+}
+
+Triangle --* Point
+Triangle ..|> CanvasDrawable
+
+class Triangle {
+- Point p1
+- Point p2
+- Point p3
++ Rectangle(Point p1, Point p2, Point p3)
++ void draw(graphics_lib.Canvas canvas)
+}
+
+}
+
+namespace modern_graphics_lib {
+
+class Point {
++ int x
++ int y
+}
+
+interface Closeable {
++ void close()
+}
+
+interface OutputStream {
++ void write(byte b[])
+}
+
+ModernGraphicsRenderer ..|> Closeable
+ModernGraphicsRenderer --* OutputStream
+ModernGraphicsRenderer --o Point
+
+class ModernGraphicsRenderer {
+- boolean drawing
++ void beginDraw()
++ void drawLine(Point start, Point end)
+- void endDraw()
++ void close()
+}
+
+}
+
+namespace app {
+
+SimpleCanvasAdapter ..|> graphics_lib.Canvas
+SimpleCanvasAdapter --|> modern_graphics_lib.ModernGraphicsRenderer
+
+class SimpleCanvasAdapter {
+- modern_graphics_lib.Point start
+- boolean drawing
++ void moveTo(int x, int y)
++ void lineTo(int x, int y)
++ void beginDraw()
++ void drawLine(Point start, Point end)
+- void endDraw()
++ void close()
+}
+
+}
+
+@enduml

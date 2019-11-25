@@ -76,6 +76,7 @@ interface OutputStream {
 
 ModernGraphicsRenderer ..|> Closeable
 ModernGraphicsRenderer --* OutputStream
+ModernGraphicsRenderer --o Point
 
 class ModernGraphicsRenderer {
 - boolean drawing
@@ -96,15 +97,6 @@ class SimpleCanvasAdapter {
 - modern_graphics_lib.Point start
 + void moveTo(int x, int y)
 + void lineTo(int x, int y)
-}
-
-ModernGraphicsRendererAdapter ..|> shape_drawing_lib.CanvasPainter
-ModernGraphicsRendererAdapter --* SimpleCanvasAdapter
-ModernGraphicsRendererAdapter ..o shape_drawing_lib.CanvasDrawable
-
-class ModernGraphicsRendererAdapter {
-- SimpleCanvasAdapter canvas
-+ draw(shape_drawing_lib.CanvasDrawable)
 }
 
 }
