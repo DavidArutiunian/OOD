@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="gui.GUI">
+  <grid id="27dc6" binding="root" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="757" height="537"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <toolbar id="e10a9">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="328" height="20"/>
+          </grid>
+        </constraints>
+        <properties>
+          <floatable value="false"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="4bdd5" class="javax.swing.JRadioButton" binding="lineRadio">
+            <constraints/>
+            <properties>
+              <hideActionText value="false"/>
+              <text value="Линия"/>
+            </properties>
+          </component>
+          <component id="29bfe" class="javax.swing.JRadioButton" binding="ellipseRadio">
+            <constraints/>
+            <properties>
+              <text value="Эллипс"/>
+            </properties>
+          </component>
+          <component id="6023a" class="javax.swing.JRadioButton" binding="rectangleRadio">
+            <constraints/>
+            <properties>
+              <text value="Прямоугольник"/>
+            </properties>
+          </component>
+          <component id="a6d30" class="gui.color_chooser.ColorChooserButton" binding="fillColorPicker" custom-create="true">
+            <constraints/>
+            <properties/>
+          </component>
+          <component id="772ea" class="gui.color_chooser.ColorChooserButton" binding="strokeColorChooser" custom-create="true">
+            <constraints/>
+            <properties/>
+          </component>
+          <hspacer id="e8616">
+            <constraints/>
+          </hspacer>
+        </children>
+      </toolbar>
+      <grid id="3378b" class="gui.canvas.JCanvas" binding="canvas" custom-create="true" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children/>
+      </grid>
+    </children>
+  </grid>
+  <buttonGroups>
+    <group name="shapeRadioGroup" bound="true">
+      <member id="4bdd5"/>
+      <member id="29bfe"/>
+      <member id="6023a"/>
+    </group>
+  </buttonGroups>
+</form>
