@@ -25,21 +25,21 @@ abstract class AbstractShapeState(
         shape = createShape()
         shape.setFillStyle(fillColor)
         shape.setStrokeStyle(strokeWidth, strokeColor)
-        shape.select()
         from = event.point
+        shape.select()
     }
 
-    override fun handleDrag(event: MouseEvent) {
+    override fun handleDrag(event: MouseEvent, onShapeAdded: () -> Unit) {
         to = event.point
         shape.setFrame(from, to)
         if (!added) {
             shapes.add(shape)
             added = true
+            onShapeAdded()
         }
     }
 
     override fun handleRelease(event: MouseEvent) {
-        shape.unselect()
         // reset to initial values
         shape = createShape()
         from = Point(0, 0)

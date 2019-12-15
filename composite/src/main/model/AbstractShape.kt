@@ -27,12 +27,10 @@ abstract class AbstractShape : CanvasShape, JComponent() {
     init {
         addMouseListener(object : MouseAdapter() {
             override fun mousePressed(e: MouseEvent?) {
-                select()
                 point = e?.point
             }
 
             override fun mouseReleased(e: MouseEvent?) {
-                unselect()
                 point = null
             }
         })
@@ -44,6 +42,51 @@ abstract class AbstractShape : CanvasShape, JComponent() {
                     frame.bottomRight.x += e.x - point!!.x
                     frame.bottomRight.y += e.y - point!!.y
                 }
+            }
+        })
+    }
+
+    override fun doOnMousePressed(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
+        val self = this
+        addMouseListener(object : MouseAdapter() {
+            override fun mousePressed(e: MouseEvent?) {
+                listener(self, e)
+            }
+        })
+    }
+
+    override fun doOnMouseRelease(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
+        val self = this
+        addMouseListener(object : MouseAdapter() {
+            override fun mouseReleased(e: MouseEvent?) {
+                listener(self, e)
+            }
+        })
+    }
+
+    override fun doOnMouseEntered(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
+        val self = this
+        addMouseListener(object : MouseAdapter() {
+            override fun mouseEntered(e: MouseEvent?) {
+                listener(self, e)
+            }
+        })
+    }
+
+    override fun doOnMouseExited(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
+        val self = this
+        addMouseListener(object : MouseAdapter() {
+            override fun mouseExited(e: MouseEvent?) {
+                listener(self, e)
+            }
+        })
+    }
+
+    override fun doOnMouseDragged(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
+        val self = this
+        addMouseMotionListener(object : MouseMotionAdapter() {
+            override fun mouseDragged(e: MouseEvent?) {
+                listener(self, e)
             }
         })
     }
@@ -85,11 +128,6 @@ abstract class AbstractShape : CanvasShape, JComponent() {
             g2d.stroke = BasicStroke(frameStrokeWidth.value)
             g2d.draw(absoluteRect)
         }
-    }
-
-    override fun containsPoint(point: Point): Boolean {
-        val absoluteRect = transformToAbsoluteRect(frame)
-        return absoluteRect.contains(point)
     }
 
     override fun setStrokeStyle(width: StrokeWidth, color: Color) {

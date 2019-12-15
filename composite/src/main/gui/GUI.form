@@ -19,6 +19,13 @@
         </properties>
         <border type="none"/>
         <children>
+          <component id="e67f0" class="javax.swing.JRadioButton" binding="cursorRadio">
+            <constraints/>
+            <properties>
+              <selected value="true"/>
+              <text value="Курсор"/>
+            </properties>
+          </component>
           <component id="4bdd5" class="javax.swing.JRadioButton" binding="lineRadio">
             <constraints/>
             <properties>
@@ -63,10 +70,11 @@
     </children>
   </grid>
   <buttonGroups>
-    <group name="shapeRadioGroup" bound="true">
+    <group name="shapeRadioGroup">
       <member id="4bdd5"/>
       <member id="29bfe"/>
       <member id="6023a"/>
+      <member id="e67f0"/>
     </group>
   </buttonGroups>
 </form>

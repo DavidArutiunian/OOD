@@ -6,7 +6,7 @@ import java.awt.event.MouseEvent
 interface ShapeState {
     fun handlePress(event: MouseEvent)
 
-    fun handleDrag(event: MouseEvent)
+    fun handleDrag(event: MouseEvent, onShapeAdded: () -> Unit)
 
     fun handleRelease(event: MouseEvent)
 

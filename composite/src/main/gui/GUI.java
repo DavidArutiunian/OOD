@@ -6,6 +6,7 @@ import gui.state.EllipseShapeState;
 import gui.state.LineShapeState;
 import gui.state.RectangleShapeState;
 import gui.state.ShapeState;
+import kotlin.Unit;
 import model.CanvasShape;
 import model.StrokeWidth;
 
@@ -27,10 +28,10 @@ public class GUI extends JFrame {
 
     private ColorChooserButton fillColorPicker;
     private ColorChooserButton strokeColorChooser;
-    private ButtonGroup shapeRadioGroup;
     private JRadioButton lineRadio;
     private JRadioButton ellipseRadio;
     private JRadioButton rectangleRadio;
+    private JRadioButton cursorRadio;
 
     private transient ArrayList<CanvasShape> shapes;
 
@@ -49,32 +50,32 @@ public class GUI extends JFrame {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                canvas.unselectAll();
                 if (shapeState != null) {
                     shapeState.handlePress(e);
-                    canvas.repaint();
                 }
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                shapeRadioGroup.clearSelection();
-                shapeState = null;
+                canvas.repaint();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (shapeState != null) {
                     shapeState.handleRelease(e);
-                    canvas.repaint();
                 }
+                canvas.repaint();
             }
         });
 
         canvas.addMouseMotionListener(new MouseMotionAdapter() {
+            private Unit doOnShapesMutation() {
+                canvas.doOnShapesMutation();
+                return Unit.INSTANCE;
+            }
+
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (shapeState != null) {
-                    shapeState.handleDrag(e);
+                    shapeState.handleDrag(e, this::doOnShapesMutation);
                     canvas.repaint();
                 }
             }
@@ -83,6 +84,10 @@ public class GUI extends JFrame {
         lineRadio.addActionListener(e -> shapeState = lineShapeState);
         ellipseRadio.addActionListener(e -> shapeState = ellipseShapeState);
         rectangleRadio.addActionListener(e -> shapeState = rectangleShapeState);
+        cursorRadio.addActionListener(e -> {
+            canvas.unselectAll();
+            shapeState = null;
+        });
     }
 
     private void createUIComponents() {

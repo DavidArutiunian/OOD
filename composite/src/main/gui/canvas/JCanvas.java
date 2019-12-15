@@ -1,48 +1,80 @@
 package gui.canvas;
 
+import kotlin.Unit;
 import model.CanvasShape;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.lang.ref.WeakReference;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class JCanvas extends JPanel {
+    private transient Set<WeakReference<CanvasShape>> subscribed = new HashSet<>();
     private transient List<CanvasShape> shapes;
-
-    private transient MouseAdapter shapeMouseAdapter = new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            setCursor(Cursor.getDefaultCursor());
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            repaint();
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            repaint();
-        }
-    };
-
-    private transient MouseMotionAdapter shapeMouseMotionAdapter = new MouseMotionAdapter() {
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            repaint();
-        }
-    };
 
     public JCanvas(List<CanvasShape> shapes) {
         this.shapes = shapes;
+        doOnShapesMutation();
+    }
+
+    public void doOnShapesMutation() {
+        for (var shape : shapes) {
+            // check if `subscribed` contains shape ref
+            // also remove all null refs
+            if (subscribed.stream().noneMatch(ref -> {
+                var unref = ref.get();
+                if (unref == null) {
+                    subscribed.remove(ref);
+                    return false;
+                }
+                return unref == shape;
+            })) {
+                var ref = new WeakReference<>(shape);
+                subscribed.add(ref);
+
+                shape.doOnMouseEntered(this::doOnMouseEntered);
+                shape.doOnMouseExited(this::doOnMouseExited);
+                shape.doOnMousePressed(this::doOnMousePressed);
+                shape.doOnMouseRelease(this::doOnMouseReleased);
+                shape.doOnMouseDragged(this::doOnMouseDragged);
+            }
+        }
+    }
+
+    private Unit doOnMouseEntered(CanvasShape shape, MouseEvent event) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return Unit.INSTANCE;
+    }
+
+    private Unit doOnMouseExited(CanvasShape shape, MouseEvent event) {
+        setCursor(Cursor.getDefaultCursor());
+        return Unit.INSTANCE;
+    }
+
+    private Unit doOnMousePressed(CanvasShape shape, MouseEvent event) {
+        unselectAll();
+        shape.select();
+        repaint();
+        return Unit.INSTANCE;
+    }
+
+    private Unit doOnMouseReleased(CanvasShape shape, MouseEvent event) {
+        repaint();
+        return Unit.INSTANCE;
+    }
+
+    private Unit doOnMouseDragged(CanvasShape shape, MouseEvent event) {
+        repaint();
+        return Unit.INSTANCE;
+    }
+
+    public void unselectAll() {
+        for (var shape : shapes) {
+            shape.unselect();
+        }
     }
 
     @Override
@@ -51,12 +83,6 @@ public class JCanvas extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         for (var shape : shapes) {
             shape.paint(g2d, this);
-
-            shape.removeMouseListener(shapeMouseAdapter);
-            shape.addMouseListener(shapeMouseAdapter);
-
-            shape.removeMouseMotionListener(shapeMouseMotionAdapter);
-            shape.addMouseMotionListener(shapeMouseMotionAdapter);
         }
     }
 }
