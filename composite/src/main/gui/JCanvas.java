@@ -58,7 +58,7 @@ public class JCanvas extends JPanel {
                 shape.doOnMouseEntered(this::doOnMouseEntered);
                 shape.doOnMouseExited(this::doOnMouseExited);
                 shape.doOnMousePressed(this::doOnMousePressed);
-                shape.doOnMouseRelease(this::doOnMouseReleased);
+                shape.doOnMouseReleased(this::doOnMouseReleased);
                 shape.doOnMouseDragged(this::doOnMouseDragged);
             }
         }

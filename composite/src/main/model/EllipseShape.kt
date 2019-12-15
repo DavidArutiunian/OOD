@@ -3,7 +3,7 @@ package model
 import java.awt.Shape
 import java.awt.geom.Ellipse2D
 
-class EllipseShape : AbstractShape() {
+class EllipseShape : FramableShape() {
     override fun createShape(frame: RectView): Shape {
         val x = frame.absolute.getX()
         val y = frame.absolute.getY()

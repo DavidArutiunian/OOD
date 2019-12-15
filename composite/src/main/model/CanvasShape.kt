@@ -8,6 +8,10 @@ import javax.swing.JPanel
 interface CanvasShape : CanvasShapeObservable {
     fun paint(g2d: Graphics2D, parent: JPanel)
 
+    fun getFillStyle(): Color?
+
+    fun getStrokeStyle(): Pair<StrokeWidth?, Color?>
+
     fun setStrokeStyle(width: StrokeWidth, color: Color)
 
     fun setFillStyle(color: Color)

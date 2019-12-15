@@ -3,103 +3,54 @@ package model
 import java.awt.*
 import java.awt.RenderingHints.KEY_ANTIALIASING
 import java.awt.RenderingHints.VALUE_ANTIALIAS_ON
-import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.awt.event.MouseMotionAdapter
 import javax.swing.JComponent
 import javax.swing.JPanel
-import kotlin.math.max
-import kotlin.math.min
 
-abstract class AbstractShape : CanvasShape, JComponent() {
+abstract class AbstractShape : JComponent(), CanvasShape {
+    private val observable = ShapeObservable()
+
     private var fillColor: Color = Color.BLACK
     private var strokeColor: Color = Color.BLACK
     private var strokeWidth = StrokeWidth.ONE
 
-    private var frame = FrameRect(Point(0, 0), Point(0, 0))
-    private val frameStrokeWidth = StrokeWidth.ONE
-    private val frameStrokeColor = Color(33, 150, 243)
-    private val frameFillColor = Color(33, 150, 243, 30)
-
     private var selected = false
-    private var point: Point? = null
-
-    init {
-        addMouseListener(object : MouseAdapter() {
-            override fun mousePressed(e: MouseEvent?) {
-                point = e?.point
-            }
-
-            override fun mouseReleased(e: MouseEvent?) {
-                point = null
-            }
-        })
-        addMouseMotionListener(object : MouseMotionAdapter() {
-            override fun mouseDragged(e: MouseEvent?) {
-                if (e != null && point != null) {
-                    frame.topLeft.x += e.x - point!!.x
-                    frame.topLeft.y += e.y - point!!.y
-                    frame.bottomRight.x += e.x - point!!.x
-                    frame.bottomRight.y += e.y - point!!.y
-                }
-            }
-        })
-    }
 
     override fun doOnMousePressed(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
-        val self = this
-        addMouseListener(object : MouseAdapter() {
-            override fun mousePressed(e: MouseEvent?) {
-                listener(self, e)
-            }
-        })
+        observable.doOnMousePressed(this, this, listener)
     }
 
-    override fun doOnMouseRelease(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
-        val self = this
-        addMouseListener(object : MouseAdapter() {
-            override fun mouseReleased(e: MouseEvent?) {
-                listener(self, e)
-            }
-        })
+    override fun doOnMouseReleased(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
+        observable.doOnMouseReleased(this, this, listener)
     }
 
     override fun doOnMouseEntered(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
-        val self = this
-        addMouseListener(object : MouseAdapter() {
-            override fun mouseEntered(e: MouseEvent?) {
-                listener(self, e)
-            }
-        })
+        observable.doOnMouseEntered(this, this, listener)
     }
 
     override fun doOnMouseExited(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
-        val self = this
-        addMouseListener(object : MouseAdapter() {
-            override fun mouseExited(e: MouseEvent?) {
-                listener(self, e)
-            }
-        })
+        observable.doOnMouseExited(this, this, listener)
     }
 
     override fun doOnMouseDragged(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit) {
-        val self = this
-        addMouseMotionListener(object : MouseMotionAdapter() {
-            override fun mouseDragged(e: MouseEvent?) {
-                listener(self, e)
-            }
-        })
+        observable.doOnMouseDragged(this, this, listener)
     }
 
     protected abstract fun createShape(frame: RectView): Shape
 
+    protected abstract fun getAbsoluteRect(): Rectangle
+
+    protected abstract fun getInitialRect(): Rectangle
+
+    protected abstract fun paintFrame(g2d: Graphics2D, rect: Rectangle)
+
     override fun paint(g2d: Graphics2D, parent: JPanel) {
         parent.add(this)
 
-        val absoluteRect = transformToAbsoluteRect(frame)
-        val initialRect = transformToRect(frame)
-        val rectWithDimensions = RectView(absoluteRect, initialRect)
-        val shape = createShape(rectWithDimensions)
+        val absoluteRect = getAbsoluteRect()
+        val initialRect = getInitialRect()
+        val rectView = RectView(absoluteRect, initialRect)
+        val shape = createShape(rectView)
 
 
         // set size & location of JComponent
@@ -117,16 +68,9 @@ abstract class AbstractShape : CanvasShape, JComponent() {
         g2d.stroke = BasicStroke(strokeWidth.value)
         g2d.draw(shape)
 
+        // draw frame if selected
         if (selected) {
-            // draw frame fill
-            g2d.color = frameFillColor
-            g2d.stroke = BasicStroke(0f)
-            g2d.fill(absoluteRect)
-
-            // draw frame stroke
-            g2d.color = frameStrokeColor
-            g2d.stroke = BasicStroke(frameStrokeWidth.value)
-            g2d.draw(absoluteRect)
+            paintFrame(g2d, absoluteRect)
         }
     }
 
@@ -135,12 +79,16 @@ abstract class AbstractShape : CanvasShape, JComponent() {
         strokeColor = color
     }
 
+    override fun getStrokeStyle(): Pair<StrokeWidth?, Color?> {
+        return Pair(strokeWidth, strokeColor)
+    }
+
     override fun setFillStyle(color: Color) {
         fillColor = color
     }
 
-    override fun setFrame(topLeft: Point, bottomRight: Point) {
-        frame = FrameRect(topLeft, bottomRight)
+    override fun getFillStyle(): Color? {
+        return fillColor
     }
 
     override fun select() {
@@ -150,24 +98,6 @@ abstract class AbstractShape : CanvasShape, JComponent() {
     override fun unselect() {
         selected = false
     }
-
-    private fun transformToAbsoluteRect(frame: FrameRect): Rectangle {
-        val x1 = min(frame.topLeft.x, frame.bottomRight.x)
-        val y1 = min(frame.topLeft.y, frame.bottomRight.y)
-        val x2 = max(frame.topLeft.x, frame.bottomRight.x)
-        val y2 = max(frame.topLeft.y, frame.bottomRight.y)
-        return Rectangle(Point(x1, y1), Dimension(x2 - x1, y2 - y1))
-    }
-
-    private fun transformToRect(frame: FrameRect): Rectangle {
-        val x1 = frame.topLeft.x
-        val y1 = frame.topLeft.y
-        val x2 = frame.bottomRight.x
-        val y2 = frame.bottomRight.y
-        return Rectangle(Point(x1, y1), Dimension(x2 - x1, y2 - y1))
-    }
-
-    private data class FrameRect(val topLeft: Point, val bottomRight: Point)
 
     protected data class RectView(val absolute: Rectangle, val initial: Rectangle)
 }

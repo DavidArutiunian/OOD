@@ -3,7 +3,7 @@ package model
 import java.awt.Shape
 import java.awt.geom.Rectangle2D
 
-class RectangleShape : AbstractShape() {
+class RectangleShape : FramableShape() {
     override fun createShape(frame: RectView): Shape {
         val x = frame.absolute.getX()
         val y = frame.absolute.getY()

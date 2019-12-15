@@ -3,7 +3,7 @@ package model
 import java.awt.Shape
 import java.awt.geom.Line2D
 
-class LineShape : AbstractShape() {
+class LineShape : FramableShape() {
     override fun createShape(frame: RectView): Shape {
         val x1 = frame.initial.getX()
         val y1 = frame.initial.getY()
