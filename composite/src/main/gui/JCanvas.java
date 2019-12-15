@@ -1,10 +1,12 @@
-package gui.canvas;
+package gui;
 
 import kotlin.Unit;
 import model.CanvasShape;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
@@ -12,12 +14,30 @@ import java.util.List;
 import java.util.Set;
 
 public class JCanvas extends JPanel {
+    private boolean selecting = false;
+
     private transient Set<WeakReference<CanvasShape>> subscribed = new HashSet<>();
     private transient List<CanvasShape> shapes;
 
     public JCanvas(List<CanvasShape> shapes) {
         this.shapes = shapes;
         doOnShapesMutation();
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    selecting = true;
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    selecting = false;
+                }
+            }
+        });
     }
 
     public void doOnShapesMutation() {
@@ -55,7 +75,9 @@ public class JCanvas extends JPanel {
     }
 
     private Unit doOnMousePressed(CanvasShape shape, MouseEvent event) {
-        unselectAll();
+        if (!selecting) {
+            unselectAll();
+        }
         shape.select();
         repaint();
         return Unit.INSTANCE;

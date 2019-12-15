@@ -1,4 +1,4 @@
-package gui.color_chooser;
+package gui;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,7 +1,5 @@
 package gui;
 
-import gui.canvas.JCanvas;
-import gui.color_chooser.ColorChooserButton;
 import gui.state.EllipseShapeState;
 import gui.state.LineShapeState;
 import gui.state.RectangleShapeState;
@@ -17,7 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 
-public class GUI extends JFrame {
+public class Application extends JFrame {
     private JPanel root;
 
     private JCanvas canvas;
@@ -40,7 +38,7 @@ public class GUI extends JFrame {
     private transient RectangleShapeState rectangleShapeState;
     private transient ShapeState shapeState = null;
 
-    public GUI(String title, int width, int height) {
+    public Application(String title, int width, int height) {
         setTitle(title);
         setContentPane(root);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -50,6 +48,7 @@ public class GUI extends JFrame {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                canvas.requestFocusInWindow();
                 canvas.unselectAll();
                 if (shapeState != null) {
                     shapeState.handlePress(e);
@@ -90,6 +89,13 @@ public class GUI extends JFrame {
         });
     }
 
+    @Override
+    public void requestFocus() {
+        super.requestFocus();
+        canvas.requestFocusInWindow();
+    }
+
+    // form constructor
     private void createUIComponents() {
         shapes = new ArrayList<>();
         canvas = new JCanvas(shapes);

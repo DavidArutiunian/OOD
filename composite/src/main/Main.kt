@@ -1,4 +1,4 @@
-import gui.GUI
+import gui.Application
 import javax.swing.SwingUtilities
 
 const val width = 800
@@ -7,7 +7,7 @@ const val title = "paint.da"
 
 fun main() {
     SwingUtilities.invokeLater {
-        val canvas = GUI(title, width, height)
-        canvas.requestFocus()
+        val app = Application(title, width, height)
+        app.requestFocus()
     }
 }
