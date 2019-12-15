@@ -1,41 +1,15 @@
 package model
 
 import java.awt.*
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.awt.event.MouseMotionAdapter
 import kotlin.math.max
 import kotlin.math.min
 
 abstract class FramableShape : AbstractShape() {
     private var frame = FrameRect(Point(0, 0), Point(0, 0))
+
     private val frameStrokeWidth = StrokeWidth.ONE
     private val frameStrokeColor = Color(33, 150, 243)
     private val frameFillColor = Color(33, 150, 243, 30)
-
-    private var point: Point? = null
-
-    init {
-        addMouseListener(object : MouseAdapter() {
-            override fun mousePressed(e: MouseEvent?) {
-                point = e?.point
-            }
-
-            override fun mouseReleased(e: MouseEvent?) {
-                point = null
-            }
-        })
-        addMouseMotionListener(object : MouseMotionAdapter() {
-            override fun mouseDragged(e: MouseEvent?) {
-                if (e != null && point != null) {
-                    frame.topLeft.x += e.x - point!!.x
-                    frame.topLeft.y += e.y - point!!.y
-                    frame.bottomRight.x += e.x - point!!.x
-                    frame.bottomRight.y += e.y - point!!.y
-                }
-            }
-        })
-    }
 
     override fun paintFrame(g2d: Graphics2D, rect: Rectangle) {
         // draw frame fill
@@ -53,11 +27,20 @@ abstract class FramableShape : AbstractShape() {
         frame = FrameRect(topLeft, bottomRight)
     }
 
+    override fun getFrame(): FrameRect {
+        return frame
+    }
+
+    // correctly calculated rect
+    // has always top left at real top left
+    // and bottom right at real bottom right
     override fun getAbsoluteRect(): Rectangle {
         return transformToAbsoluteRect(frame)
     }
 
-    override fun getInitialRect(): Rectangle {
+    // can contain negative x/y/width/height
+    // represents where user clicked and where dragged
+    override fun getBasicRect(): Rectangle {
         return transformToBasicRect(frame)
     }
 
@@ -77,5 +60,5 @@ abstract class FramableShape : AbstractShape() {
         return Rectangle(Point(x1, y1), Dimension(x2 - x1, y2 - y1))
     }
 
-    private data class FrameRect(val topLeft: Point, val bottomRight: Point)
+    override fun doOnMouseDragged(diff: FrameRect) {}
 }

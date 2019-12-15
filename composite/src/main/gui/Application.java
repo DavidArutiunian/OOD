@@ -16,35 +16,79 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 
 public class Application extends JFrame {
+    // root panel
     private JPanel root;
-
+    // canvas
     private JCanvas canvas;
 
+    // stroke & fill
     private StrokeWidth strokeWidth = StrokeWidth.ONE;
     private Color strokeColor = Color.BLACK;
     private Color fillColor = Color.BLACK;
 
+    // color pickers
     private ColorChooserButton fillColorPicker;
     private ColorChooserButton strokeColorChooser;
+
+    // mode switchers
     private JRadioButton lineRadio;
     private JRadioButton ellipseRadio;
     private JRadioButton rectangleRadio;
     private JRadioButton cursorRadio;
 
+    // shapes store
     private transient ArrayList<CanvasShape> shapes;
 
+    // states handling shape creation
     private transient LineShapeState lineShapeState;
     private transient EllipseShapeState ellipseShapeState;
     private transient RectangleShapeState rectangleShapeState;
     private transient ShapeState shapeState = null;
 
-    public Application(String title, int width, int height) {
-        setTitle(title);
-        setContentPane(root);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(width, height);
-        setVisible(true);
+    private static Application instance = null;
 
+    private Application(String title, int width, int height) {
+        initFrame(title, width, height);
+        initCanvasMouseListener();
+        initCanvasMouseMotionListener();
+        initRadioActionListeners();
+    }
+
+    public static Application getInstance(String title, int width, int height) {
+        if (instance == null) {
+            instance = new Application(title, width, height);
+        }
+        return instance;
+    }
+
+    private void initRadioActionListeners() {
+        lineRadio.addActionListener(e -> shapeState = lineShapeState);
+        ellipseRadio.addActionListener(e -> shapeState = ellipseShapeState);
+        rectangleRadio.addActionListener(e -> shapeState = rectangleShapeState);
+        cursorRadio.addActionListener(e -> {
+            canvas.unselectAll();
+            shapeState = null;
+        });
+    }
+
+    private void initCanvasMouseMotionListener() {
+        canvas.addMouseMotionListener(new MouseMotionAdapter() {
+            private Unit doOnShapesMutation() {
+                canvas.doOnShapesMutation();
+                return Unit.INSTANCE;
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (shapeState != null) {
+                    shapeState.handleDrag(e, this::doOnShapesMutation);
+                    canvas.repaint();
+                }
+            }
+        });
+    }
+
+    private void initCanvasMouseListener() {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -64,35 +108,20 @@ public class Application extends JFrame {
                 canvas.repaint();
             }
         });
+    }
 
-        canvas.addMouseMotionListener(new MouseMotionAdapter() {
-            private Unit doOnShapesMutation() {
-                canvas.doOnShapesMutation();
-                return Unit.INSTANCE;
-            }
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (shapeState != null) {
-                    shapeState.handleDrag(e, this::doOnShapesMutation);
-                    canvas.repaint();
-                }
-            }
-        });
-
-        lineRadio.addActionListener(e -> shapeState = lineShapeState);
-        ellipseRadio.addActionListener(e -> shapeState = ellipseShapeState);
-        rectangleRadio.addActionListener(e -> shapeState = rectangleShapeState);
-        cursorRadio.addActionListener(e -> {
-            canvas.unselectAll();
-            shapeState = null;
-        });
+    private void initFrame(String title, int width, int height) {
+        setTitle(title);
+        setContentPane(root);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(width, height);
+        setVisible(true);
     }
 
     @Override
     public void requestFocus() {
         super.requestFocus();
-        canvas.requestFocusInWindow();
+        canvas.requestFocusInWindow(); // key listeners won't work without this
     }
 
     // form constructor

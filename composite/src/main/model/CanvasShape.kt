@@ -18,7 +18,15 @@ interface CanvasShape : CanvasShapeObservable {
 
     fun setFrame(topLeft: Point, bottomRight: Point)
 
+    fun getFrame(): FrameRect
+
     fun select()
 
     fun unselect()
+
+    fun isSelected(): Boolean
+
+    fun disableInteraction()
+
+    fun enableInteraction()
 }

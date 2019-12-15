@@ -12,4 +12,6 @@ interface CanvasShapeObservable {
     fun doOnMouseExited(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit)
 
     fun doOnMouseDragged(listener: (canvas: CanvasShape, event: MouseEvent?) -> Unit)
+
+    fun doOnMouseDragged(diff: FrameRect)
 }

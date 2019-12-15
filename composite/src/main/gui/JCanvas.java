@@ -2,6 +2,7 @@ package gui;
 
 import kotlin.Unit;
 import model.CanvasShape;
+import model.CompositeShape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class JCanvas extends JPanel {
     private boolean selecting = false;
@@ -28,6 +30,24 @@ public class JCanvas extends JPanel {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
                     selecting = true;
+                }
+                if (selecting && e.getKeyCode() == KeyEvent.VK_G) {
+                    var group = shapes
+                        .stream()
+                        .filter(CanvasShape::isSelected)
+                        .peek(CanvasShape::unselect)
+                        .peek(CanvasShape::disableInteraction)
+                        .collect(Collectors.toList());
+                    // skip self grouping
+                    if (group.size() == 1) {
+                        return;
+                    }
+                    var composite = new CompositeShape(group);
+                    composite.select();
+                    shapes.removeIf(CanvasShape::isSelected);
+                    shapes.add(composite);
+                    doOnShapesMutation();
+                    repaint();
                 }
             }
 
@@ -58,8 +78,8 @@ public class JCanvas extends JPanel {
                 shape.doOnMouseEntered(this::doOnMouseEntered);
                 shape.doOnMouseExited(this::doOnMouseExited);
                 shape.doOnMousePressed(this::doOnMousePressed);
-                shape.doOnMouseReleased(this::doOnMouseReleased);
-                shape.doOnMouseDragged(this::doOnMouseDragged);
+                shape.doOnMouseReleased(this::doOnMouseReleasedAndDragged);
+                shape.doOnMouseDragged(this::doOnMouseReleasedAndDragged);
             }
         }
     }
@@ -75,6 +95,7 @@ public class JCanvas extends JPanel {
     }
 
     private Unit doOnMousePressed(CanvasShape shape, MouseEvent event) {
+        requestFocusInWindow();
         if (!selecting) {
             unselectAll();
         }
@@ -83,12 +104,7 @@ public class JCanvas extends JPanel {
         return Unit.INSTANCE;
     }
 
-    private Unit doOnMouseReleased(CanvasShape shape, MouseEvent event) {
-        repaint();
-        return Unit.INSTANCE;
-    }
-
-    private Unit doOnMouseDragged(CanvasShape shape, MouseEvent event) {
+    private Unit doOnMouseReleasedAndDragged(CanvasShape shape, MouseEvent event) {
         repaint();
         return Unit.INSTANCE;
     }

@@ -7,7 +7,7 @@ const val title = "paint.da"
 
 fun main() {
     SwingUtilities.invokeLater {
-        val app = Application(title, width, height)
+        val app = Application.getInstance(title, width, height)
         app.requestFocus()
     }
 }

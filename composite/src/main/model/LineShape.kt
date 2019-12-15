@@ -4,7 +4,7 @@ import java.awt.Shape
 import java.awt.geom.Line2D
 
 class LineShape : FramableShape() {
-    override fun createShape(frame: RectView): Shape {
+    override fun createShape(frame: RectView): Shape? {
         val x1 = frame.initial.getX()
         val y1 = frame.initial.getY()
         val x2 = x1 + frame.initial.getWidth()

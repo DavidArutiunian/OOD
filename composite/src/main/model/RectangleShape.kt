@@ -4,7 +4,7 @@ import java.awt.Shape
 import java.awt.geom.Rectangle2D
 
 class RectangleShape : FramableShape() {
-    override fun createShape(frame: RectView): Shape {
+    override fun createShape(frame: RectView): Shape? {
         val x = frame.absolute.getX()
         val y = frame.absolute.getY()
         val width = frame.absolute.getWidth()

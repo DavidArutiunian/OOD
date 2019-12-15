@@ -44,7 +44,7 @@ public class ColorChooserButton extends JButton {
 
         if (notify) {
             for (var listener : listeners) {
-                listener.colorChanged(color);
+                listener.doOnColorChanged(color);
             }
         }
     }
