@@ -8,18 +8,22 @@ import java.io.PrintStream
 internal class GumballMachineImplTest {
     companion object {
         val EOLN = System.lineSeparator()!!
+        const val INITIAL_NUM_BALLS = 5
     }
 
     private val byteArrayOutputStream = ByteArrayOutputStream()
     private val systemOutputStream = System.out
     private lateinit var gumballMachine: GumballMachine
 
+    /**
+     * Create GumballMachine with 5 balls
+     */
     @BeforeEach
     fun setUp() {
         val printStream = PrintStream(byteArrayOutputStream)
         System.setOut(printStream)
 
-        gumballMachine = GumballMachineImpl(5)
+        createGumballMachine(INITIAL_NUM_BALLS)
     }
 
     @AfterEach
@@ -31,26 +35,27 @@ internal class GumballMachineImplTest {
     @Nested
     internal inner class NoQuarterStateTest {
         @Test
-        fun insertQuarter() {
+        fun `insert quarter`() {
             gumballMachine.insertQuarter()
             assertStringsTrimmed("You inserted a quarter", byteArrayOutputStream.toString())
         }
 
         @Test
-        fun ejectQuarter() {
+        fun `eject quarter`() {
             gumballMachine.ejectQuarter()
             assertStringsTrimmed("You haven't inserted a quarter", byteArrayOutputStream.toString())
         }
 
         @Test
-        fun turnCrank() {
+        fun `turn crank`() {
             gumballMachine.turnCrank()
             assertStringsTrimmed("You turned but there's no quarter${EOLN}You need to pay first", byteArrayOutputStream.toString())
         }
 
         @Test
-        fun insertAndEjectQuarter() {
-            gumballMachine = GumballMachineImpl(1)
+        fun `insert 1 quarter to machine with 1 ball and check machine empty`() {
+            val numBalls = 1
+            createGumballMachine(numBalls)
             gumballMachine.insertQuarter()
             gumballMachine.ejectQuarter()
             byteArrayOutputStream.reset()
@@ -61,28 +66,32 @@ internal class GumballMachineImplTest {
 
     @Nested
     internal inner class SoldOutStateTests {
+        /**
+         * Make gumballMachine to sold out state
+         */
         @BeforeEach
         fun setUp() {
-            gumballMachine = GumballMachineImpl(1)
+            val numBalls = 1
+            createGumballMachine(numBalls)
             gumballMachine.insertQuarter()
             gumballMachine.turnCrank()
             byteArrayOutputStream.reset()
         }
 
         @Test
-        fun insertQuarter() {
+        fun `insert quarter`() {
             gumballMachine.insertQuarter()
             assertStringsTrimmed("You can't insert a quarter, the machine is sold out", byteArrayOutputStream.toString())
         }
 
         @Test
-        fun ejectQuarter() {
+        fun `eject quarter`() {
             gumballMachine.ejectQuarter()
             assertStringsTrimmed("You can't eject, you haven't inserted a quarter yet", byteArrayOutputStream.toString())
         }
 
         @Test
-        fun turnCrank() {
+        fun `turn crank`() {
             gumballMachine.turnCrank()
             assertStringsTrimmed("You turned but there're no gumballs${EOLN}No gumball dispensed", byteArrayOutputStream.toString())
         }
@@ -90,5 +99,9 @@ internal class GumballMachineImplTest {
 
     private fun assertStringsTrimmed(expected: String, actual: String) {
         Assertions.assertEquals(expected.trim(), actual.trim())
+    }
+
+    private fun createGumballMachine(numBalls: Int) {
+        gumballMachine = GumballMachineImpl(numBalls)
     }
 }
