@@ -33,6 +33,52 @@ internal class GumballMachineImplTest {
     }
 
     @Nested
+    internal inner class HasQuarterStateTest {
+        /**
+         * Make GumballMachine to has quarter state
+         */
+        @BeforeEach
+        fun setUp() {
+            val numBalls = 1
+            setUpGumballMachine(numBalls)
+        }
+
+        @Test
+        fun `insert quarter`() {
+            gumballMachine.insertQuarter()
+            assertStringsTrimmed("You can't insert another quarter", byteArrayOutputStream.toString())
+        }
+
+        @Test
+        fun `eject quarter`() {
+            gumballMachine.ejectQuarter()
+            assertStringsTrimmed("Quarter returned", byteArrayOutputStream.toString())
+        }
+
+        @Test
+        fun `turn crank with 1 ball`() {
+            gumballMachine.turnCrank()
+            assertStringsTrimmed("You turned...${EOLN}" +
+                "A gumball comes rolling out the slot...${EOLN}" +
+                "Oops, out of gumballs", byteArrayOutputStream.toString())
+        }
+
+        @Test
+        fun `turn crank with 2 balls`() {
+            val numBalls = 2
+            setUpGumballMachine(numBalls)
+            gumballMachine.turnCrank()
+            assertStringsTrimmed("You turned...${EOLN}A gumball comes rolling out the slot...", byteArrayOutputStream.toString())
+        }
+
+        private fun setUpGumballMachine(numBalls: Int = 1) {
+            createGumballMachine(numBalls)
+            gumballMachine.insertQuarter()
+            byteArrayOutputStream.reset()
+        }
+    }
+
+    @Nested
     internal inner class NoQuarterStateTest {
         @Test
         fun `insert quarter`() {
@@ -67,7 +113,7 @@ internal class GumballMachineImplTest {
     @Nested
     internal inner class SoldOutStateTests {
         /**
-         * Make gumballMachine to sold out state
+         * Make GumballMachine to sold out state
          */
         @BeforeEach
         fun setUp() {
