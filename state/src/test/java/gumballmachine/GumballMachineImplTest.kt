@@ -1,4 +1,4 @@
-package gumball_machine
+package gumballmachine
 
 import org.junit.jupiter.api.*
 import java.io.ByteArrayOutputStream

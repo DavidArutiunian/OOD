@@ -1,4 +1,4 @@
-package gumball_machine
+package gumballmachine
 
 interface GumballMachine {
     fun ejectQuarter()

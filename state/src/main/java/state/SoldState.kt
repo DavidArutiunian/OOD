@@ -1,6 +1,6 @@
 package state
 
-import gumball_machine.GumballMachine
+import gumballmachine.GumballMachine
 
 class SoldState(private val gumballMachine: GumballMachine) : State {
     override fun insertQuarter() {
