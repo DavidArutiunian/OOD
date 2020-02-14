@@ -1,8 +1,8 @@
 package state
 
-import gumballmachine.GumballMachine
+import gumballmachine.GumballMachineInternal
 
-class SoldOutState(private val gumballMachine: GumballMachine) : State {
+class SoldOutState(private val gumballMachine: GumballMachineInternal) : State {
     override fun insertQuarter() {
         println("You can't insert a quarter, the machine is sold out")
     }

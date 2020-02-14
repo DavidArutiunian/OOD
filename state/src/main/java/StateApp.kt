@@ -1,5 +1,5 @@
+import gumballmachine.BasicGumballMachine
 import gumballmachine.GumballMachine
-import gumballmachine.GumballMachineImpl
 
 fun <T : GumballMachine> testGumballMachine(m: T) {
     println(m.toString())
@@ -29,6 +29,6 @@ fun <T : GumballMachine> testGumballMachine(m: T) {
 }
 
 fun main() {
-    val m = GumballMachineImpl(5)
+    val m = BasicGumballMachine(5)
     testGumballMachine(m)
 }

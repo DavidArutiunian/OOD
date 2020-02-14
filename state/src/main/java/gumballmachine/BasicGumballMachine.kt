@@ -1,8 +1,12 @@
 package gumballmachine
 
-import state.*
+import state.HasQuarterState
+import state.NoQuarterState
+import state.SoldOutState
+import state.SoldState
+import state.State
 
-class GumballMachineImpl(private var numBalls: Int) : GumballMachine {
+class BasicGumballMachine(private var numBalls: Int) : GumballMachine, GumballMachineInternal {
     private val soldState = SoldState(this)
     private val soldOutState = SoldOutState(this)
     private val noQuarterState = NoQuarterState(this)

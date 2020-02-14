@@ -1,5 +1,6 @@
-package gumballmachine
+package multigumballmachine.naive
 
+import gumballmachine.GumballMachine
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -9,7 +10,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 
-internal class GumballMachineImplTest {
+internal class MultiGumballMachineImplTest {
     companion object {
         val EOLN = System.lineSeparator()!!
         const val INITIAL_NUM_BALLS = 5
@@ -20,7 +21,7 @@ internal class GumballMachineImplTest {
     private lateinit var gumballMachine: GumballMachine
 
     /**
-     * Create gumballmachine.GumballMachine with 5 balls
+     * Create GumballMachine with 5 balls
      */
     @BeforeEach
     fun setUp() {
@@ -72,7 +73,7 @@ internal class GumballMachineImplTest {
     @Nested
     internal inner class HasQuarterStateTest {
         /**
-         * Make gumballmachine.GumballMachine to has quarter state
+         * Make GumballMachine to has quarter state
          */
         @BeforeEach
         fun setUp() {
@@ -150,7 +151,7 @@ internal class GumballMachineImplTest {
     @Nested
     internal inner class SoldOutStateTests {
         /**
-         * Make gumballmachine.GumballMachine to sold out state
+         * Make GumballMachine to sold out state
          */
         @BeforeEach
         fun setUp() {
@@ -185,6 +186,6 @@ internal class GumballMachineImplTest {
     }
 
     private fun createGumballMachine(numBalls: Int) {
-        gumballMachine = BasicGumballMachine(numBalls)
+        gumballMachine = MultiGumballMachine(numBalls)
     }
 }
