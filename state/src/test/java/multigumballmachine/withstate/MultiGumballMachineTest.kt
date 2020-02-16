@@ -15,7 +15,7 @@ internal class MultiGumballMachineImplTest : GumballTestSuite() {
         @BeforeEach
         fun setUp() {
             val numBalls = 2
-            createGumballMachine(numBalls)
+            gumballMachine = createGumballMachine(numBalls)
             gumballMachine.insertQuarter()
             gumballMachine.turnCrank()
             byteArrayOutputStream.reset()
@@ -38,13 +38,13 @@ internal class MultiGumballMachineImplTest : GumballTestSuite() {
         @Test
         fun `eject quarter`() {
             gumballMachine.ejectQuarter()
-            assertOutputStream("All quarters returned")
+            assertOutputStream("You haven't inserted a quarter")
         }
 
         @Test
         fun `turn crank`() {
             gumballMachine.turnCrank()
-            assertOutputStream("You turned...${EOLN}A gumball comes rolling out the slot...")
+            assertOutputStream("You turned but there's no quarter${EOLN}You need to pay first")
         }
     }
 

@@ -12,7 +12,11 @@ class MultiSoldState(
     override fun dispense() {
         gumballMachine.releaseBall()
         if (gumballMachine.getBallCount() > 0) {
-            gumballMachine.setHasQuarterState()
+            if (gumballMachine.getQuartersCount() == 0) {
+                gumballMachine.setNoQuarterState()
+            } else {
+                gumballMachine.setHasQuarterState()
+            }
         } else {
             println("Oops, out of gumballs")
             gumballMachine.setSoldOutState()

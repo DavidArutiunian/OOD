@@ -1,34 +1,39 @@
 import gumballmachine.GumballMachine
-import gumballmachine.withstate.BasicGumballMachine
-
-fun <T : GumballMachine> testGumballMachine(m: T) {
-    println(m.toString())
-
-    m.insertQuarter()
-    m.turnCrank()
-
-    println(m.toString())
-
-    m.insertQuarter()
-    m.turnCrank()
-    m.insertQuarter()
-    m.turnCrank()
-    m.ejectQuarter()
-
-    println(m.toString())
-
-    m.insertQuarter()
-    m.insertQuarter()
-    m.turnCrank()
-    m.insertQuarter()
-    m.turnCrank()
-    m.insertQuarter()
-    m.turnCrank()
-
-    println(m.toString())
-}
+import multigumballmachine.withstate.MultiGumballMachine
+import java.util.Scanner
+import kotlin.system.exitProcess
 
 fun main() {
-    val m = BasicGumballMachine(5)
-    testGumballMachine(m)
+    val sc = createScanner()
+    val numBalls = readNumBalls(sc)
+    printSplash()
+    val gumballMachine = createGumballMachine(numBalls)
+
+    val commands = HashMap<String, () -> Unit>()
+    commands["Exit"] = { exitProcess(0) }
+    commands["InsertQuarter"] = { gumballMachine.insertQuarter() }
+    commands["TurnCrank"] = { gumballMachine.turnCrank() }
+    commands["EjectQuarter"] = { gumballMachine.ejectQuarter() }
+
+    while (true) run {
+        printReadToken()
+        val token = readToken(sc)
+        commands[token]?.invoke()
+    }
 }
+
+fun printSplash() = println("===== START =====")
+
+fun printReadToken() = print("<<: ")
+
+fun createScanner(): Scanner = Scanner(System.`in`)
+
+fun readToken(sc: Scanner): String = sc.next()
+
+fun readNumBalls(sc: Scanner): Int {
+    println("===== CONFIGURATION =====")
+    print("<< NUM_BALLS: ")
+    return sc.nextInt()
+}
+
+fun createGumballMachine(numBalls: Int): GumballMachine = MultiGumballMachine(numBalls)

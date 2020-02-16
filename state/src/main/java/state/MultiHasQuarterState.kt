@@ -13,7 +13,7 @@ open class MultiHasQuarterState(
     override fun insertQuarter() {
         gumballMachine.addQuarter()
         if (gumballMachine.getQuartersCount() == maxQuarters) {
-            gumballMachine.setHasQuarterState()
+            gumballMachine.setMaxQuartersState()
         }
     }
 
