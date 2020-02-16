@@ -2,7 +2,7 @@ package state
 
 import gumballmachine.GumballMachineInternal
 
-class NoQuarterState(private val gumballMachine: GumballMachineInternal) : State {
+open class NoQuarterState(private val gumballMachine: GumballMachineInternal) : State {
     override fun insertQuarter() {
         println("You inserted a quarter")
         gumballMachine.setHasQuarterState()

@@ -1,5 +1,7 @@
-package gumballmachine
+package gumballmachine.withstate
 
+import gumballmachine.GumballMachine
+import gumballmachine.GumballMachineInternal
 import state.HasQuarterState
 import state.NoQuarterState
 import state.SoldOutState
@@ -11,19 +13,19 @@ class BasicGumballMachine(private var numBalls: Int) : GumballMachine, GumballMa
     private val soldOutState = SoldOutState(this)
     private val noQuarterState = NoQuarterState(this)
     private val hasQuarterState = HasQuarterState(this)
-    private var state: State? = noQuarterState
+    private var state: State = noQuarterState
 
     override fun ejectQuarter() {
-        state?.ejectQuarter()
+        state.ejectQuarter()
     }
 
     override fun insertQuarter() {
-        state?.insertQuarter()
+        state.insertQuarter()
     }
 
     override fun turnCrank() {
-        state?.turnCrank()
-        state?.dispense()
+        state.turnCrank()
+        state.dispense()
     }
 
     override fun toString(): String {
@@ -31,7 +33,7 @@ class BasicGumballMachine(private var numBalls: Int) : GumballMachine, GumballMa
             Mighty Gumball, Inc.
             Kotlin-enabled Standing Gumball Model #2020 (with state)
             Inventory: $numBalls gumball${if (numBalls != 1) "s" else ""}
-            Machine is ${state.toString()}
+            Machine is $state
         """.trimIndent()
     }
 

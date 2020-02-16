@@ -1,5 +1,5 @@
-import gumballmachine.BasicGumballMachine
 import gumballmachine.GumballMachine
+import gumballmachine.withstate.BasicGumballMachine
 
 fun <T : GumballMachine> testGumballMachine(m: T) {
     println(m.toString())

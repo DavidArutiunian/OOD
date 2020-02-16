@@ -1,12 +1,12 @@
-package gumballmachine
+package multigumballmachine.withstate
 
-import gumballmachine.withstate.BasicGumballMachine
+import gumballmachine.GumballMachine
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import utils.GumballTestSuite
 
-internal class GumballMachineImplTest : GumballTestSuite() {
+internal class MultiGumballMachineImplTest : GumballTestSuite() {
     @Nested
     internal inner class SoldStateTest {
         /**
@@ -24,19 +24,27 @@ internal class GumballMachineImplTest : GumballTestSuite() {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertOutputStream("You inserted a quarter")
+            assertOutputStream("You inserted 1 quarter")
+        }
+
+        @Test
+        fun `insert 2 quarters`() {
+            gumballMachine.insertQuarter()
+            byteArrayOutputStream.reset()
+            gumballMachine.insertQuarter()
+            assertOutputStream("You inserted 2 quarters")
         }
 
         @Test
         fun `eject quarter`() {
             gumballMachine.ejectQuarter()
-            assertOutputStream("You haven't inserted a quarter")
+            assertOutputStream("All quarters returned")
         }
 
         @Test
         fun `turn crank`() {
             gumballMachine.turnCrank()
-            assertOutputStream("You turned but there's no quarter${EOLN}You need to pay first")
+            assertOutputStream("You turned...${EOLN}A gumball comes rolling out the slot...")
         }
     }
 
@@ -54,21 +62,23 @@ internal class GumballMachineImplTest : GumballTestSuite() {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertOutputStream("You can't insert another quarter")
+            assertOutputStream("You inserted 2 quarters")
         }
 
         @Test
         fun `eject quarter`() {
             gumballMachine.ejectQuarter()
-            assertOutputStream("Quarter returned")
+            assertOutputStream("All quarters returned")
         }
 
         @Test
         fun `turn crank with 1 ball`() {
             gumballMachine.turnCrank()
-            assertOutputStream("You turned...${EOLN}" +
-                "A gumball comes rolling out the slot...${EOLN}" +
-                "Oops, out of gumballs")
+            assertOutputStream(
+                "You turned...${EOLN}" +
+                    "A gumball comes rolling out the slot...${EOLN}" +
+                    "Oops, out of gumballs"
+            )
         }
 
         @Test
@@ -91,7 +101,7 @@ internal class GumballMachineImplTest : GumballTestSuite() {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertOutputStream("You inserted a quarter")
+            assertOutputStream("You inserted 1 quarter")
         }
 
         @Test
@@ -152,6 +162,6 @@ internal class GumballMachineImplTest : GumballTestSuite() {
     }
 
     override fun createGumballMachine(numBalls: Int): GumballMachine {
-        return BasicGumballMachine(numBalls)
+        return MultiGumballMachine(numBalls)
     }
 }

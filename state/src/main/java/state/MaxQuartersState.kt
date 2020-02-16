@@ -1,14 +1,20 @@
 package state
 
-import gumballmachine.GumballMachineInternal
+import gumballmachine.MultiGumballMachineInternal
 
-open class HasQuarterState(private val gumballMachine: GumballMachineInternal) : State {
+class MaxQuartersState(
+    private val gumballMachine: MultiGumballMachineInternal
+) : RefillableState {
+    override fun refill(numBalls: Int) {
+        gumballMachine.refill(numBalls)
+    }
+
     override fun insertQuarter() {
-        println("You can't insert another quarter")
+        println("Max number of quarters")
     }
 
     override fun ejectQuarter() {
-        println("Quarter returned")
+        gumballMachine.returnAllQuarters()
         gumballMachine.setNoQuarterState()
     }
 
@@ -22,6 +28,6 @@ open class HasQuarterState(private val gumballMachine: GumballMachineInternal) :
     }
 
     override fun toString(): String {
-        return "waiting for the turn of crank"
+        return "max quarters"
     }
 }
