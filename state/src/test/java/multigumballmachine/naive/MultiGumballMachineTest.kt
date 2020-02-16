@@ -40,7 +40,7 @@ internal class MultiGumballMachineImplTest {
     @Nested
     internal inner class SoldStateTest {
         /**
-         * Make gumballmachine.GumballMachine to sold state
+         * Make GumballMachine to sold state
          */
         @BeforeEach
         fun setUp() {
@@ -54,7 +54,15 @@ internal class MultiGumballMachineImplTest {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertStringsTrimmed("You inserted a quarter", byteArrayOutputStream.toString())
+            assertStringsTrimmed("You inserted 1 quarter", byteArrayOutputStream.toString())
+        }
+
+        @Test
+        fun `insert 2 quarters`() {
+            gumballMachine.insertQuarter()
+            byteArrayOutputStream.reset()
+            gumballMachine.insertQuarter()
+            assertWithOutputStream("You inserted 2 quarters")
         }
 
         @Test
@@ -84,13 +92,13 @@ internal class MultiGumballMachineImplTest {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertStringsTrimmed("You can't insert another quarter", byteArrayOutputStream.toString())
+            assertStringsTrimmed("You inserted 2 quarters", byteArrayOutputStream.toString())
         }
 
         @Test
         fun `eject quarter`() {
             gumballMachine.ejectQuarter()
-            assertStringsTrimmed("Quarter returned", byteArrayOutputStream.toString())
+            assertStringsTrimmed("All quarters returned", byteArrayOutputStream.toString())
         }
 
         @Test
@@ -121,7 +129,7 @@ internal class MultiGumballMachineImplTest {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertStringsTrimmed("You inserted a quarter", byteArrayOutputStream.toString())
+            assertStringsTrimmed("You inserted 1 quarter", byteArrayOutputStream.toString())
         }
 
         @Test
@@ -179,6 +187,10 @@ internal class MultiGumballMachineImplTest {
             gumballMachine.turnCrank()
             assertStringsTrimmed("You turned but there're no gumballs${EOLN}No gumball dispensed", byteArrayOutputStream.toString())
         }
+    }
+
+    private fun assertWithOutputStream(expected: String) {
+        assertStringsTrimmed(expected, byteArrayOutputStream.toString())
     }
 
     private fun assertStringsTrimmed(expected: String, actual: String) {

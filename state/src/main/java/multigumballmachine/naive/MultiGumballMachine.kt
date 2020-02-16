@@ -16,7 +16,7 @@ class MultiGumballMachine(numBalls: Int) : GumballMachine {
 
     private var state: State = if (numBalls > 0) State.NO_QUARTER else State.SOLD_OUT
 
-    private var gumBallsCount = 0
+    private var gumBallsCount = numBalls
     private var quartersCount = 0
 
     override fun ejectQuarter() {
@@ -54,16 +54,16 @@ class MultiGumballMachine(numBalls: Int) : GumballMachine {
         when (state) {
             State.SOLD -> println("Turning twice doesn't get you another gumball!")
 
-            State.NO_QUARTER -> println("You turned, but there's no quarter")
+            State.NO_QUARTER -> println("You turned but there's no quarter")
 
-            State.SOLD_OUT -> println("You turned, but there are no gumballs")
+            State.SOLD_OUT -> println("You turned but there're no gumballs")
 
             State.HAS_QUARTER -> {
                 println("You turned...")
                 state = State.SOLD
-                dispense()
             }
         }
+        dispense()
     }
 
     private fun dispense() {
@@ -82,7 +82,7 @@ class MultiGumballMachine(numBalls: Int) : GumballMachine {
     private fun addQuarter() {
         if (quartersCount < MAX_QUARTERS) {
             quartersCount++
-            println("Inserting $quartersCount quarter${if (quartersCount > 1) "s" else ""}")
+            println("You inserted $quartersCount quarter${if (quartersCount > 1) "s" else ""}")
         } else {
             println("Quarters limit exceeded")
         }
@@ -99,7 +99,7 @@ class MultiGumballMachine(numBalls: Int) : GumballMachine {
         gumBallsCount--
         state = when {
             gumBallsCount == 0 -> {
-                println("Oops, out of gumballs!")
+                println("Oops, out of gumballs")
                 State.SOLD_OUT
             }
 
