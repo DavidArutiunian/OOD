@@ -1,42 +1,12 @@
 package multigumballmachine.naive
 
 import gumballmachine.GumballMachine
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
+import utils.GumballTestSuite
 
-
-internal class MultiGumballMachineImplTest {
-    companion object {
-        val EOLN = System.lineSeparator()!!
-        const val INITIAL_NUM_BALLS = 5
-    }
-
-    private val byteArrayOutputStream = ByteArrayOutputStream()
-    private val systemOutputStream = System.out
-    private lateinit var gumballMachine: GumballMachine
-
-    /**
-     * Create GumballMachine with 5 balls
-     */
-    @BeforeEach
-    fun setUp() {
-        val printStream = PrintStream(byteArrayOutputStream)
-        System.setOut(printStream)
-
-        createGumballMachine(INITIAL_NUM_BALLS)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        System.out.flush()
-        System.setOut(systemOutputStream)
-    }
-
+internal class MultiGumballMachineImplTest : GumballTestSuite() {
     @Nested
     internal inner class SoldStateTest {
         /**
@@ -54,7 +24,7 @@ internal class MultiGumballMachineImplTest {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertStringsTrimmed("You inserted 1 quarter", byteArrayOutputStream.toString())
+            assertOutputStream("You inserted 1 quarter")
         }
 
         @Test
@@ -62,19 +32,19 @@ internal class MultiGumballMachineImplTest {
             gumballMachine.insertQuarter()
             byteArrayOutputStream.reset()
             gumballMachine.insertQuarter()
-            assertWithOutputStream("You inserted 2 quarters")
+            assertOutputStream("You inserted 2 quarters")
         }
 
         @Test
         fun `eject quarter`() {
             gumballMachine.ejectQuarter()
-            assertStringsTrimmed("You haven't inserted a quarter", byteArrayOutputStream.toString())
+            assertOutputStream("You haven't inserted a quarter")
         }
 
         @Test
         fun `turn crank`() {
             gumballMachine.turnCrank()
-            assertStringsTrimmed("You turned but there's no quarter${EOLN}You need to pay first", byteArrayOutputStream.toString())
+            assertOutputStream("You turned but there's no quarter${EOLN}You need to pay first")
         }
     }
 
@@ -92,21 +62,23 @@ internal class MultiGumballMachineImplTest {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertStringsTrimmed("You inserted 2 quarters", byteArrayOutputStream.toString())
+            assertOutputStream("You inserted 2 quarters")
         }
 
         @Test
         fun `eject quarter`() {
             gumballMachine.ejectQuarter()
-            assertStringsTrimmed("All quarters returned", byteArrayOutputStream.toString())
+            assertOutputStream("All quarters returned")
         }
 
         @Test
         fun `turn crank with 1 ball`() {
             gumballMachine.turnCrank()
-            assertStringsTrimmed("You turned...${EOLN}" +
-                "A gumball comes rolling out the slot...${EOLN}" +
-                "Oops, out of gumballs", byteArrayOutputStream.toString())
+            assertOutputStream(
+                "You turned...${EOLN}" +
+                    "A gumball comes rolling out the slot...${EOLN}" +
+                    "Oops, out of gumballs"
+            )
         }
 
         @Test
@@ -114,11 +86,11 @@ internal class MultiGumballMachineImplTest {
             val numBalls = 2
             setUpGumballMachine(numBalls)
             gumballMachine.turnCrank()
-            assertStringsTrimmed("You turned...${EOLN}A gumball comes rolling out the slot...", byteArrayOutputStream.toString())
+            assertOutputStream("You turned...${EOLN}A gumball comes rolling out the slot...")
         }
 
         private fun setUpGumballMachine(numBalls: Int = 1) {
-            createGumballMachine(numBalls)
+            gumballMachine = createGumballMachine(numBalls)
             gumballMachine.insertQuarter()
             byteArrayOutputStream.reset()
         }
@@ -129,19 +101,19 @@ internal class MultiGumballMachineImplTest {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertStringsTrimmed("You inserted 1 quarter", byteArrayOutputStream.toString())
+            assertOutputStream("You inserted 1 quarter")
         }
 
         @Test
         fun `eject quarter`() {
             gumballMachine.ejectQuarter()
-            assertStringsTrimmed("You haven't inserted a quarter", byteArrayOutputStream.toString())
+            assertOutputStream("You haven't inserted a quarter")
         }
 
         @Test
         fun `turn crank`() {
             gumballMachine.turnCrank()
-            assertStringsTrimmed("You turned but there's no quarter${EOLN}You need to pay first", byteArrayOutputStream.toString())
+            assertOutputStream("You turned but there's no quarter${EOLN}You need to pay first")
         }
 
         @Test
@@ -152,7 +124,7 @@ internal class MultiGumballMachineImplTest {
             gumballMachine.ejectQuarter()
             byteArrayOutputStream.reset()
             gumballMachine.turnCrank()
-            assertStringsTrimmed("You turned but there's no quarter${EOLN}You need to pay first", byteArrayOutputStream.toString())
+            assertOutputStream("You turned but there's no quarter${EOLN}You need to pay first")
         }
     }
 
@@ -164,7 +136,7 @@ internal class MultiGumballMachineImplTest {
         @BeforeEach
         fun setUp() {
             val numBalls = 1
-            createGumballMachine(numBalls)
+            gumballMachine = createGumballMachine(numBalls)
             gumballMachine.insertQuarter()
             gumballMachine.turnCrank()
             byteArrayOutputStream.reset()
@@ -173,31 +145,23 @@ internal class MultiGumballMachineImplTest {
         @Test
         fun `insert quarter`() {
             gumballMachine.insertQuarter()
-            assertStringsTrimmed("You can't insert a quarter, the machine is sold out", byteArrayOutputStream.toString())
+            assertOutputStream("You can't insert a quarter, the machine is sold out")
         }
 
         @Test
         fun `eject quarter`() {
             gumballMachine.ejectQuarter()
-            assertStringsTrimmed("You can't eject, you haven't inserted a quarter yet", byteArrayOutputStream.toString())
+            assertOutputStream("You can't eject, you haven't inserted a quarter yet")
         }
 
         @Test
         fun `turn crank`() {
             gumballMachine.turnCrank()
-            assertStringsTrimmed("You turned but there're no gumballs${EOLN}No gumball dispensed", byteArrayOutputStream.toString())
+            assertOutputStream("You turned but there're no gumballs${EOLN}No gumball dispensed")
         }
     }
 
-    private fun assertWithOutputStream(expected: String) {
-        assertStringsTrimmed(expected, byteArrayOutputStream.toString())
-    }
-
-    private fun assertStringsTrimmed(expected: String, actual: String) {
-        Assertions.assertEquals(expected.trim(), actual.trim())
-    }
-
-    private fun createGumballMachine(numBalls: Int) {
-        gumballMachine = MultiGumballMachine(numBalls)
+    override fun createGumballMachine(numBalls: Int): GumballMachine {
+        return MultiGumballMachine(numBalls)
     }
 }
